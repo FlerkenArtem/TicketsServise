@@ -46,19 +46,19 @@ namespace TicketsServise.Interfaces
             _collectionsSrc.ResetBindings(false);
             Log("Коллекции созданы");
         }
-        private void btnSortComparable_Click(object sender, EventArgs e)
+        private void btnSortComparable_Click(object sender, EventArgs e) // сортировка по стоимости (IComparable)
         {
             _collections.Sort();
             _collectionsSrc.ResetBindings(false);
             Log("Коллекции отсортированы по общей стоимости");
         }
-        private void btnSortComparer_Click(object sender, EventArgs e)
+        private void btnSortComparer_Click(object sender, EventArgs e) // сортировка по количеству билетов (IComparer)
         {
             _collections.Sort(new TicketCollectionComparer());
             _collectionsSrc.ResetBindings(false);
             Log("Коллекции отсортированы по количеству билетов");
         }
-        private void btnForeach_Click(object sender, EventArgs e)
+        private void btnForeach_Click(object sender, EventArgs e) // перебор Foreach (IEnumerable)
         {
             if (listBoxCollections.SelectedItem is TicketCollection selected)
             {
@@ -73,7 +73,7 @@ namespace TicketsServise.Interfaces
                 Log("Выберите коллекцию");
             }
         }
-        private void btnClone_Click(object sender, EventArgs e)
+        private void btnClone_Click(object sender, EventArgs e) // копирование (ICloneable)
         {
             if (listBoxCollections.SelectedItem is TicketCollection original)
             {
@@ -88,7 +88,7 @@ namespace TicketsServise.Interfaces
                 Log("Выберите коллекцию для клонирования");
             }
         }
-        private void btnDispose_Click(object sender, EventArgs e)
+        private void btnDispose_Click(object sender, EventArgs e) // очистка памяти (IDisposable)
         {
             if (listBoxCollections.SelectedItem is TicketCollection selected)
             {
