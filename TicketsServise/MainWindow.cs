@@ -27,7 +27,12 @@ namespace TicketsServise
         }
         private void organizerRegTool_Click(object sender, EventArgs e)
         {
-            // организатор
+            OrganizerReg organizerReg = new OrganizerReg();
+            organizerReg.RegEnd += (id) =>
+            {
+                organizerId = id;
+            };
+            organizerReg.ShowDialog();
         }
         private void tabControl_Selecting(object sender, TabControlCancelEventArgs e)
         {
