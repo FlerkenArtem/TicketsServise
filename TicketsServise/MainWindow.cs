@@ -22,6 +22,9 @@ namespace TicketsServise
             buyerReg.RegEnd += (id) =>
             {
                 buyerId = id;
+                newCardTool.Available = true;
+                logoutTool.Available = true;
+                buyBtn.Enabled = true;
             };
             buyerReg.ShowDialog();
         }
@@ -31,6 +34,9 @@ namespace TicketsServise
             organizerReg.RegEnd += (id) =>
             {
                 organizerId = id;
+                logoutTool.Available = true;
+                organizerMenu.Visible = true;
+                organizerMenu.Available = true;
             };
             organizerReg.ShowDialog();
         }
@@ -52,6 +58,23 @@ namespace TicketsServise
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 e.Cancel = true;
             }
+        }
+        private void logoutTool_Click(object sender, EventArgs e)
+        {
+            buyerId = Guid.Empty;
+            organizerId = Guid.Empty;
+            newCardTool.Enabled = false;
+            organizerMenu.Enabled = false;
+            organizerMenu.Visible = false;
+            logoutTool.Enabled = false;
+            buyBtn.Enabled = false;
+            tabControl.TabIndex = 0;
+            MessageBox.Show("Вы вышли из аккаунта",
+                "Информация", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+        private void loginTool_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

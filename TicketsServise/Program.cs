@@ -10,8 +10,16 @@ namespace TicketsServise
         {
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
-            ApplicationConfiguration.Initialize();
-            Application.Run(new MainWindow());
+            if (DatabaseHelper.TestConnection())
+            {
+                ApplicationConfiguration.Initialize();
+                Application.Run(new MainWindow());
+            }
+            else
+            {
+                MessageBox.Show("Не удалось подключиться к БД.",
+                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

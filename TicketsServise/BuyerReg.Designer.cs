@@ -214,7 +214,7 @@
             // 
             phoneTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             phoneTextBox.Location = new Point(12, 244);
-            phoneTextBox.Mask = "+7 (000) 000-00-00";
+            phoneTextBox.Mask = "+7 (\\900) 000-00-00";
             phoneTextBox.Name = "phoneTextBox";
             phoneTextBox.Size = new Size(458, 27);
             phoneTextBox.TabIndex = 16;

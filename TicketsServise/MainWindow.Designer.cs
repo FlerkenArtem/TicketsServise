@@ -56,9 +56,12 @@
             loginTool = new ToolStripMenuItem();
             logoutTool = new ToolStripMenuItem();
             newCardTool = new ToolStripMenuItem();
-            OrganizerMenu = new ToolStripMenuItem();
+            organizerMenu = new ToolStripMenuItem();
             newEventTool = new ToolStripMenuItem();
             newPlaceTool = new ToolStripMenuItem();
+            ticketsTool = new ToolStripMenuItem();
+            ticketsWNTool = new ToolStripMenuItem();
+            ticketsWONTool = new ToolStripMenuItem();
             infoMenu = new ToolStripMenuItem();
             aboutTool = new ToolStripMenuItem();
             tabControl = new TabControl();
@@ -101,6 +104,7 @@
             // buyBtn
             // 
             buyBtn.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            buyBtn.Enabled = false;
             buyBtn.Location = new Point(6, 442);
             buyBtn.Name = "buyBtn";
             buyBtn.Size = new Size(94, 29);
@@ -287,7 +291,7 @@
             // menuStrip
             // 
             menuStrip.ImageScalingSize = new Size(20, 20);
-            menuStrip.Items.AddRange(new ToolStripItem[] { accountMenu, OrganizerMenu, infoMenu });
+            menuStrip.Items.AddRange(new ToolStripItem[] { accountMenu, organizerMenu, infoMenu });
             menuStrip.Location = new Point(0, 0);
             menuStrip.Name = "menuStrip";
             menuStrip.Size = new Size(782, 28);
@@ -311,14 +315,14 @@
             // buyerRegTool
             // 
             buyerRegTool.Name = "buyerRegTool";
-            buyerRegTool.Size = new Size(224, 26);
+            buyerRegTool.Size = new Size(183, 26);
             buyerRegTool.Text = "Покупатель";
             buyerRegTool.Click += buyerRegTool_Click;
             // 
             // organizerRegTool
             // 
             organizerRegTool.Name = "organizerRegTool";
-            organizerRegTool.Size = new Size(224, 26);
+            organizerRegTool.Size = new Size(183, 26);
             organizerRegTool.Text = "Организатор";
             organizerRegTool.Click += organizerRegTool_Click;
             // 
@@ -342,14 +346,14 @@
             newCardTool.Size = new Size(234, 26);
             newCardTool.Text = "Добавить карту";
             // 
-            // OrganizerMenu
+            // organizerMenu
             // 
-            OrganizerMenu.DropDownItems.AddRange(new ToolStripItem[] { newEventTool, newPlaceTool });
-            OrganizerMenu.Enabled = false;
-            OrganizerMenu.Name = "OrganizerMenu";
-            OrganizerMenu.Size = new Size(166, 24);
-            OrganizerMenu.Text = "Меню организатора";
-            OrganizerMenu.Visible = false;
+            organizerMenu.DropDownItems.AddRange(new ToolStripItem[] { newEventTool, newPlaceTool, ticketsTool });
+            organizerMenu.Enabled = false;
+            organizerMenu.Name = "organizerMenu";
+            organizerMenu.Size = new Size(166, 24);
+            organizerMenu.Text = "Меню организатора";
+            organizerMenu.Visible = false;
             // 
             // newEventTool
             // 
@@ -362,6 +366,25 @@
             newPlaceTool.Name = "newPlaceTool";
             newPlaceTool.Size = new Size(246, 26);
             newPlaceTool.Text = "Создать площадку";
+            // 
+            // ticketsTool
+            // 
+            ticketsTool.DropDownItems.AddRange(new ToolStripItem[] { ticketsWNTool, ticketsWONTool });
+            ticketsTool.Name = "ticketsTool";
+            ticketsTool.Size = new Size(246, 26);
+            ticketsTool.Text = "Создать билеты";
+            // 
+            // ticketsWNTool
+            // 
+            ticketsWNTool.Name = "ticketsWNTool";
+            ticketsWNTool.Size = new Size(218, 26);
+            ticketsWNTool.Text = "С номером места";
+            // 
+            // ticketsWONTool
+            // 
+            ticketsWONTool.Name = "ticketsWONTool";
+            ticketsWONTool.Size = new Size(218, 26);
+            ticketsWONTool.Text = "Без номера места";
             // 
             // infoMenu
             // 
@@ -410,7 +433,7 @@
         private ToolStripMenuItem logoutTool;
         private ToolStripMenuItem buyerRegTool;
         private ToolStripMenuItem organizerRegTool;
-        private ToolStripMenuItem OrganizerMenu;
+        private ToolStripMenuItem organizerMenu;
         private ToolStripMenuItem newEventTool;
         private ToolStripMenuItem infoMenu;
         private ToolStripMenuItem aboutTool;
@@ -436,5 +459,8 @@
         private Button updateBtn;
         private Button saveTicketBtn;
         private DataGridView ticketView;
+        private ToolStripMenuItem ticketsTool;
+        private ToolStripMenuItem ticketsWNTool;
+        private ToolStripMenuItem ticketsWONTool;
     }
 }
