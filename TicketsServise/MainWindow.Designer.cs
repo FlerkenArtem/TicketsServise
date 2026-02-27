@@ -315,14 +315,14 @@
             // buyerRegTool
             // 
             buyerRegTool.Name = "buyerRegTool";
-            buyerRegTool.Size = new Size(183, 26);
+            buyerRegTool.Size = new Size(224, 26);
             buyerRegTool.Text = "Покупатель";
             buyerRegTool.Click += buyerRegTool_Click;
             // 
             // organizerRegTool
             // 
             organizerRegTool.Name = "organizerRegTool";
-            organizerRegTool.Size = new Size(183, 26);
+            organizerRegTool.Size = new Size(224, 26);
             organizerRegTool.Text = "Организатор";
             organizerRegTool.Click += organizerRegTool_Click;
             // 
@@ -331,6 +331,7 @@
             loginTool.Name = "loginTool";
             loginTool.Size = new Size(234, 26);
             loginTool.Text = "Войти";
+            loginTool.Click += loginTool_Click;
             // 
             // logoutTool
             // 
@@ -338,6 +339,7 @@
             logoutTool.Name = "logoutTool";
             logoutTool.Size = new Size(234, 26);
             logoutTool.Text = "Выйти";
+            logoutTool.Click += logoutTool_Click;
             // 
             // newCardTool
             // 
@@ -377,13 +379,13 @@
             // ticketsWNTool
             // 
             ticketsWNTool.Name = "ticketsWNTool";
-            ticketsWNTool.Size = new Size(218, 26);
+            ticketsWNTool.Size = new Size(224, 26);
             ticketsWNTool.Text = "С номером места";
             // 
             // ticketsWONTool
             // 
             ticketsWONTool.Name = "ticketsWONTool";
-            ticketsWONTool.Size = new Size(218, 26);
+            ticketsWONTool.Size = new Size(224, 26);
             ticketsWONTool.Text = "Без номера места";
             // 
             // infoMenu

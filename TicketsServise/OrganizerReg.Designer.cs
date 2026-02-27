@@ -165,11 +165,11 @@
             // 
             accountDateTime.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             accountDateTime.Location = new Point(3, 766);
+            accountDateTime.MaxDate = new DateTime(2026, 2, 27, 0, 0, 0, 0);
             accountDateTime.Name = "accountDateTime";
             accountDateTime.Size = new Size(431, 27);
             accountDateTime.TabIndex = 50;
             accountDateTime.Value = new DateTime(2026, 1, 1, 0, 0, 0, 0);
-            accountDateTime.MaxDate =  DateTime.Today;
             // 
             // orgCorrAccountTextBox
             // 
@@ -332,7 +332,9 @@
             // 
             password2TextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             password2TextBox.Location = new Point(3, 129);
+            password2TextBox.MaxLength = 20;
             password2TextBox.Name = "password2TextBox";
+            password2TextBox.PasswordChar = '*';
             password2TextBox.Size = new Size(431, 27);
             password2TextBox.TabIndex = 32;
             password2TextBox.TextChanged += password2TextBox_TextChanged;
@@ -368,7 +370,9 @@
             // 
             passwordTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             passwordTextBox.Location = new Point(3, 76);
+            passwordTextBox.MaxLength = 20;
             passwordTextBox.Name = "passwordTextBox";
+            passwordTextBox.PasswordChar = '*';
             passwordTextBox.Size = new Size(431, 27);
             passwordTextBox.TabIndex = 28;
             passwordTextBox.TextChanged += passwordTextBox_TextChanged;
@@ -386,6 +390,7 @@
             // 
             loginTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             loginTextBox.Location = new Point(3, 23);
+            loginTextBox.MaxLength = 20;
             loginTextBox.Name = "loginTextBox";
             loginTextBox.Size = new Size(431, 27);
             loginTextBox.TabIndex = 26;

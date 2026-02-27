@@ -19,26 +19,20 @@ namespace TicketsServise
         private void buyerRegTool_Click(object sender, EventArgs e)
         {
             BuyerReg buyerReg = new BuyerReg();
+            buyerReg.ShowDialog();
             buyerReg.RegEnd += (id) =>
             {
-                buyerId = id;
-                newCardTool.Available = true;
-                logoutTool.Available = true;
-                buyBtn.Enabled = true;
+                BuyerToolsLoad(id);
             };
-            buyerReg.ShowDialog();
         }
         private void organizerRegTool_Click(object sender, EventArgs e)
         {
             OrganizerReg organizerReg = new OrganizerReg();
+            organizerReg.ShowDialog();
             organizerReg.RegEnd += (id) =>
             {
-                organizerId = id;
-                logoutTool.Available = true;
-                organizerMenu.Visible = true;
-                organizerMenu.Available = true;
+                OrganizerToolsLoad(id);
             };
-            organizerReg.ShowDialog();
         }
         private void tabControl_Selecting(object sender, TabControlCancelEventArgs e)
         {
@@ -74,7 +68,45 @@ namespace TicketsServise
         }
         private void loginTool_Click(object sender, EventArgs e)
         {
-
+            Login login = new Login();
+            login.ShowDialog();
+            login.AccountType += (type) =>
+            {
+                if (type == 1)
+                {
+                    login.LoginEnd += (id) =>
+                    {
+                        OrganizerToolsLoad(id);
+                    };
+                }
+                else if (type == 2)
+                {
+                    login.LoginEnd += (id) =>
+                    {
+                        BuyerToolsLoad(id);
+                    };
+                }
+            };
+        }
+        private void OrganizerToolsLoad(Guid newId)
+        {
+            buyerId = Guid.Empty;
+            organizerId = newId;
+            logoutTool.Available = true;
+            organizerMenu.Visible = true;
+            organizerMenu.Available = true;
+            loginTool.Visible = false;
+            loginTool.Available = false;
+        }
+        private void BuyerToolsLoad(Guid newId)
+        {
+            organizerId = Guid.Empty;
+            buyerId = newId;
+            newCardTool.Available = true;
+            logoutTool.Available = true;
+            buyBtn.Enabled = true;
+            loginTool.Visible = false;
+            loginTool.Available = false;
         }
     }
 }
