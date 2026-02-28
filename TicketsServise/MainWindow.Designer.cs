@@ -362,12 +362,14 @@
             newEventTool.Name = "newEventTool";
             newEventTool.Size = new Size(246, 26);
             newEventTool.Text = "Создать мероприятие";
+            newEventTool.Click += newEventTool_Click;
             // 
             // newPlaceTool
             // 
             newPlaceTool.Name = "newPlaceTool";
             newPlaceTool.Size = new Size(246, 26);
             newPlaceTool.Text = "Создать площадку";
+            newPlaceTool.Click += newPlaceTool_Click;
             // 
             // ticketsTool
             // 
@@ -381,12 +383,14 @@
             ticketsWNTool.Name = "ticketsWNTool";
             ticketsWNTool.Size = new Size(224, 26);
             ticketsWNTool.Text = "С номером места";
+            ticketsWNTool.Click += ticketsWNTool_Click;
             // 
             // ticketsWONTool
             // 
             ticketsWONTool.Name = "ticketsWONTool";
             ticketsWONTool.Size = new Size(224, 26);
             ticketsWONTool.Text = "Без номера места";
+            ticketsWONTool.Click += ticketsWONTool_Click;
             // 
             // infoMenu
             // 
@@ -398,8 +402,9 @@
             // aboutTool
             // 
             aboutTool.Name = "aboutTool";
-            aboutTool.Size = new Size(224, 26);
+            aboutTool.Size = new Size(187, 26);
             aboutTool.Text = "О программе";
+            aboutTool.Click += aboutTool_Click;
             // 
             // MainWindow
             // 

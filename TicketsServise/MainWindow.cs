@@ -108,5 +108,35 @@ namespace TicketsServise
             loginTool.Visible = false;
             loginTool.Available = false;
         }
+
+        private void aboutTool_Click(object sender, EventArgs e)
+        {
+            About about = new About();
+            about.Show();
+        }
+
+        private void newEventTool_Click(object sender, EventArgs e)
+        {
+            NewEvent newEvent = new NewEvent();
+            newEvent.ShowDialog();
+        }
+
+        private void newPlaceTool_Click(object sender, EventArgs e)
+        {
+            NewPlace newPlace = new NewPlace();
+            newPlace.ShowDialog();
+        }
+
+        private void ticketsWNTool_Click(object sender, EventArgs e)
+        {
+            NewTicketsWN newTickets = new NewTicketsWN();
+            newTickets.ShowDialog();
+        }
+
+        private void ticketsWONTool_Click(object sender, EventArgs e)
+        {
+            NewTicketsWON newTickets = new NewTicketsWON();
+            newTickets.ShowDialog();
+        }
     }
 }
