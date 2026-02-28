@@ -117,8 +117,16 @@ namespace TicketsServise
 
         private void newEventTool_Click(object sender, EventArgs e)
         {
-            NewEvent newEvent = new NewEvent();
-            newEvent.ShowDialog();
+            if (organizerId != Guid.Empty) 
+            {
+                NewEvent newEvent = new NewEvent(organizerId);
+                newEvent.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show("Для добавления мероприятия необходимо войти в ситсему как организатор.",
+                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void newPlaceTool_Click(object sender, EventArgs e)
