@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
+﻿using Npgsql;
 using System.Text.RegularExpressions;
-using System.Drawing.Text;
-using Npgsql;
 
 namespace TicketsServise
 {
@@ -38,12 +30,12 @@ namespace TicketsServise
             {
                 phoneTextBox.BackColor = Color.LightGreen;
             }
-            else 
+            else
             {
                 phoneTextBox.BackColor = Color.DarkRed;
             }
         }
-        private void emailTextBox_TextChanged(object sender, EventArgs e) 
+        private void emailTextBox_TextChanged(object sender, EventArgs e)
         {
             var uniqueEmailQuery = @"SELECT 1 
                                     FROM account 
@@ -54,8 +46,8 @@ namespace TicketsServise
             };
             var queryResult = DatabaseHelper.ExecuteNonQuery(uniqueEmailQuery, emailParameters);
             Regex regex = new Regex(@"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$");
-            if (queryResult == 1 && regex.IsMatch(emailTextBox.Text)) 
-            { 
+            if (queryResult == 1 && regex.IsMatch(emailTextBox.Text))
+            {
                 emailTextBox.BackColor = Color.LightYellow;
             }
             else if (regex.IsMatch(emailTextBox.Text))
@@ -98,7 +90,7 @@ namespace TicketsServise
             }
             else
             {
-                surnameTextBox.BackColor= Color.DarkRed;
+                surnameTextBox.BackColor = Color.DarkRed;
             }
         }
         private void nameTextBox_TextChanged(object sender, EventArgs e)
@@ -110,20 +102,20 @@ namespace TicketsServise
             }
             else
             {
-                nameTextBox.BackColor= Color.DarkRed;
+                nameTextBox.BackColor = Color.DarkRed;
             }
         }
         private void patronymicTextBox_TextChanged(object sender, EventArgs e)
         {
             Regex regex = new Regex(@"^$|^[А-Яа-яЁё]+$");
-            if ((regex.IsMatch(patronymicTextBox.Text) && patronymicTextBox.TextLength >= 2 && char.IsUpper(patronymicTextBox.Text[0]) || 
+            if ((regex.IsMatch(patronymicTextBox.Text) && patronymicTextBox.TextLength >= 2 && char.IsUpper(patronymicTextBox.Text[0]) ||
                 patronymicTextBox.TextLength == 0))
             {
                 patronymicTextBox.BackColor = Color.LightGreen;
             }
             else
             {
-                patronymicTextBox.BackColor= Color.DarkRed;
+                patronymicTextBox.BackColor = Color.DarkRed;
             }
         }
         private void loginTextBox_TextChanged(object sender, EventArgs e)
@@ -147,14 +139,15 @@ namespace TicketsServise
             }
             else
             {
-                loginTextBox.BackColor= Color.DarkRed;
+                loginTextBox.BackColor = Color.DarkRed;
             }
         }
         private void okBtn_Click(object sender, EventArgs e)
         {
             string login = loginTextBox.Text;
             string password;
-            if (passwordTextBox.Text == password2TextBox.Text) {
+            if (passwordTextBox.Text == password2TextBox.Text)
+            {
                 password = passwordTextBox.Text;
             }
             else
@@ -166,17 +159,10 @@ namespace TicketsServise
             string phone = phoneTextBox.Text;
             string surname = surnameTextBox.Text;
             string name = nameTextBox.Text;
-            string patronymic;
-            if (string.IsNullOrEmpty(patronymicTextBox.Text))
-            {
-                patronymic = "NULL";
-            }
-            else
-            {
-                patronymic = patronymicTextBox.Text;
-            }
+            string? patronymic = patronymicTextBox.Text;
 
-            if (string.IsNullOrEmpty(login) || 
+
+            if (string.IsNullOrEmpty(login) ||
                 string.IsNullOrEmpty(password) ||
                 string.IsNullOrEmpty(email) ||
                 string.IsNullOrEmpty(phone) ||
@@ -184,11 +170,11 @@ namespace TicketsServise
                 string.IsNullOrEmpty(name) ||
                 string.IsNullOrEmpty(password))
             {
-                MessageBox.Show("Не все необходимые поля заполнены.", "Ошибка", 
+                MessageBox.Show("Не все необходимые поля заполнены.", "Ошибка",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            
+
             try
             {
                 var buyerRegQuery = @"SELECT buyer_reg(@new_login, @new_password, @new_email, @new_phone, @new_surname, @new_name, @new_patronymic);";
@@ -218,7 +204,7 @@ namespace TicketsServise
                     }
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);

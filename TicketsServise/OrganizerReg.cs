@@ -1,12 +1,6 @@
 ﻿using Npgsql;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
 
 namespace TicketsServise
 {
@@ -17,7 +11,7 @@ namespace TicketsServise
             InitializeComponent();
         }
         // Событие завершения регистрации для передачи id в главное окно
-        public event Action<Guid> RegEnd; 
+        public event Action<Guid> RegEnd;
         // id организатора
         Guid organizerId;
         private void phoneTextBox_TextChanged(object sender, EventArgs e)
@@ -34,7 +28,7 @@ namespace TicketsServise
             Regex regex = new Regex(@"^\+7 \(9\d{2}\) \d{3}-\d{2}-\d{2}$");
             if (queryResult == 1 && regex.IsMatch(phoneTextBox.Text))
             {
-                phoneTextBox.BackColor = Color.LightYellow; 
+                phoneTextBox.BackColor = Color.LightYellow;
                 // Номер в правильном формате, но повторяется - выделяется желтым
             }
             else if (regex.IsMatch(phoneTextBox.Text))
@@ -232,7 +226,7 @@ namespace TicketsServise
             string? bik;
             string? kpp;
             string? account;
-            string? inn; 
+            string? inn;
             var bankDataQuery = @"SELECT bik.bik, kpp.kpp, corr_account.account, inn.inn 
                                 FROM bank
                                 WHERE bank.name = @bank_name
@@ -273,7 +267,7 @@ namespace TicketsServise
             }
             else
             {
-                bankBikTextBox.BackColor= Color.DarkRed;
+                bankBikTextBox.BackColor = Color.DarkRed;
             }
         }
         private void bankInnTextBox_TextChanged(object sender, EventArgs e)
@@ -285,7 +279,7 @@ namespace TicketsServise
             }
             else
             {
-                bankInnTextBox.BackColor= Color.DarkRed;
+                bankInnTextBox.BackColor = Color.DarkRed;
             }
         }
         private void bankKppTextBox_TextChanged(object sender, EventArgs e)
@@ -297,7 +291,7 @@ namespace TicketsServise
             }
             else
             {
-                bankKppTextBox.BackColor= Color.DarkRed;
+                bankKppTextBox.BackColor = Color.DarkRed;
             }
         }
         private void cancelBtn_Click(object sender, EventArgs e)
@@ -306,7 +300,7 @@ namespace TicketsServise
         }
         private void okBtn_Click(Object sender, EventArgs e)
         {
-            string login = loginTextBox.Text; if (passwordTextBox.Text == password2TextBox.Text);
+            string login = loginTextBox.Text; if (passwordTextBox.Text == password2TextBox.Text) ;
             string password;
             if (passwordTextBox.Text == password2TextBox.Text)
             {

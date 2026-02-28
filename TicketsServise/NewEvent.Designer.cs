@@ -31,8 +31,9 @@
             Button addBtn;
             okBtn = new Button();
             cancelBtn = new Button();
-            panel1 = new Panel();
+            panel = new Panel();
             penformersGroupBox = new GroupBox();
+            performersListBox = new ListBox();
             delBtn = new Button();
             performerInfoTextBox = new TextBox();
             label7 = new Label();
@@ -48,9 +49,8 @@
             label2 = new Label();
             nameTextBox = new TextBox();
             label1 = new Label();
-            performersListBox = new ListBox();
             addBtn = new Button();
-            panel1.SuspendLayout();
+            panel.SuspendLayout();
             penformersGroupBox.SuspendLayout();
             SuspendLayout();
             // 
@@ -87,25 +87,25 @@
             cancelBtn.UseVisualStyleBackColor = true;
             cancelBtn.Click += cancelBtn_Click;
             // 
-            // panel1
+            // panel
             // 
-            panel1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            panel1.AutoScroll = true;
-            panel1.Controls.Add(penformersGroupBox);
-            panel1.Controls.Add(genreComboBox);
-            panel1.Controls.Add(typeComboBox);
-            panel1.Controls.Add(placeComboBox);
-            panel1.Controls.Add(label5);
-            panel1.Controls.Add(label4);
-            panel1.Controls.Add(label3);
-            panel1.Controls.Add(dateTimeTextBox);
-            panel1.Controls.Add(label2);
-            panel1.Controls.Add(nameTextBox);
-            panel1.Controls.Add(label1);
-            panel1.Location = new Point(12, 12);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(458, 394);
-            panel1.TabIndex = 2;
+            panel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            panel.AutoScroll = true;
+            panel.Controls.Add(penformersGroupBox);
+            panel.Controls.Add(genreComboBox);
+            panel.Controls.Add(typeComboBox);
+            panel.Controls.Add(placeComboBox);
+            panel.Controls.Add(label5);
+            panel.Controls.Add(label4);
+            panel.Controls.Add(label3);
+            panel.Controls.Add(dateTimeTextBox);
+            panel.Controls.Add(label2);
+            panel.Controls.Add(nameTextBox);
+            panel.Controls.Add(label1);
+            panel.Location = new Point(12, 12);
+            panel.Name = "panel";
+            panel.Size = new Size(458, 394);
+            panel.TabIndex = 2;
             // 
             // penformersGroupBox
             // 
@@ -122,6 +122,14 @@
             penformersGroupBox.TabIndex = 6;
             penformersGroupBox.TabStop = false;
             penformersGroupBox.Text = "Исполнители";
+            // 
+            // performersListBox
+            // 
+            performersListBox.FormattingEnabled = true;
+            performersListBox.Location = new Point(206, 26);
+            performersListBox.Name = "performersListBox";
+            performersListBox.Size = new Size(216, 304);
+            performersListBox.TabIndex = 7;
             // 
             // delBtn
             // 
@@ -264,28 +272,20 @@
             label1.TabIndex = 0;
             label1.Text = "Название мероприятия";
             // 
-            // performersListBox
-            // 
-            performersListBox.FormattingEnabled = true;
-            performersListBox.Location = new Point(206, 26);
-            performersListBox.Name = "performersListBox";
-            performersListBox.Size = new Size(216, 304);
-            performersListBox.TabIndex = 7;
-            // 
             // NewEvent
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(482, 453);
-            Controls.Add(panel1);
+            Controls.Add(panel);
             Controls.Add(cancelBtn);
             Controls.Add(okBtn);
             MaximumSize = new Size(500, 500);
             MinimumSize = new Size(500, 500);
             Name = "NewEvent";
             Text = "Добавить мероприятие";
-            panel1.ResumeLayout(false);
-            panel1.PerformLayout();
+            panel.ResumeLayout(false);
+            panel.PerformLayout();
             penformersGroupBox.ResumeLayout(false);
             penformersGroupBox.PerformLayout();
             ResumeLayout(false);
@@ -296,7 +296,7 @@
 
         private Button okBtn;
         private Button cancelBtn;
-        private Panel panel1;
+        private Panel panel;
         private GroupBox penformersGroupBox;
         private ComboBox genreComboBox;
         private ComboBox typeComboBox;
