@@ -1,12 +1,5 @@
 ﻿using Npgsql;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
 
 namespace TicketsServise
 {
@@ -19,7 +12,7 @@ namespace TicketsServise
         public event Action<Guid> LoginEnd;
         public event Action<int> AccountType;
         private void loginTextBox_TextChanged(object sender, EventArgs e)
-        { 
+        {
             Regex regex = new Regex(@"^[A-Za-z0-9!@#$%^&*()_\-+=]{8,20}$");
             if (regex.IsMatch(loginTextBox.Text))
             {
@@ -53,7 +46,8 @@ namespace TicketsServise
             string login = loginTextBox.Text;
             string password = passwordTextBox.Text;
             if (string.IsNullOrEmpty(login) ||
-                    string.IsNullOrEmpty(password)){
+                    string.IsNullOrEmpty(password))
+            {
                 MessageBox.Show("Заполните логин и пароль",
                     "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }

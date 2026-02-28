@@ -1,13 +1,6 @@
 ﻿using Npgsql;
-using NpgsqlTypes;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
 
 namespace TicketsServise
 {
@@ -69,6 +62,7 @@ namespace TicketsServise
                     string name = row.Field<string>("name");
                     _places.Add(id, name);
                 }
+                placeComboBox.SelectedIndex = -1;
                 placeComboBox.DataSource = _places;
                 placeComboBox.DisplayMember = "Value";
                 placeComboBox.ValueMember = "Key";
@@ -92,6 +86,7 @@ namespace TicketsServise
                     string type = row.Field<string>("type");
                     _types.Add(id, type);
                 }
+                typeComboBox.SelectedIndex = -1;
                 typeComboBox.DataSource = _types;
                 typeComboBox.DisplayMember = "Value";
                 typeComboBox.ValueMember = "Key";
@@ -114,6 +109,7 @@ namespace TicketsServise
                     string genre = row.Field<string>("genre");
                     _genres.Add(id, genre);
                 }
+                genreComboBox.SelectedIndex = -1;
                 genreComboBox.DataSource = _genres;
                 genreComboBox.DisplayMember = "Value";
                 genreComboBox.ValueMember = "Key";
@@ -126,20 +122,8 @@ namespace TicketsServise
         }
         private void addBtn_Click(object sender, EventArgs e)
         {
-            string? performerName = null;
-            string? performerInfo = null;
-            if (string.IsNullOrEmpty(performerTextBox.Text))
-            {
-                performerName = performerTextBox.Text;
-            }
-            if (string.IsNullOrEmpty(performerInfoTextBox.Text))
-            {
-                performerInfo = performerInfoTextBox.Text;
-            }
-            else
-            {
-                performerInfo = "NULL";
-            }
+            string? performerName = performerTextBox.Text;
+            string? performerInfo = performerInfoTextBox.Text;
             if (!string.IsNullOrEmpty(performerName) && !string.IsNullOrEmpty(performerInfo))
             {
                 _performers.Add(performerName, performerInfo);
@@ -163,7 +147,7 @@ namespace TicketsServise
                 }
                 else
                 {
-                    MessageBox.Show("Не удалось удалить исполнителя.", 
+                    MessageBox.Show("Не удалось удалить исполнителя.",
                         "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
@@ -252,7 +236,7 @@ namespace TicketsServise
                 };
                 var res = DatabaseHelper.ExecuteScalar(query, parameters);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 MessageBox.Show($"Ошибка выполнения запроса: {ex}",
                         "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);

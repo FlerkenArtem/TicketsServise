@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
-
-namespace TicketsServise
+﻿namespace TicketsServise
 {
     public partial class MainWindow : Form
     {
@@ -117,22 +109,30 @@ namespace TicketsServise
 
         private void newEventTool_Click(object sender, EventArgs e)
         {
-            if (organizerId != Guid.Empty) 
+            if (organizerId != Guid.Empty)
             {
                 NewEvent newEvent = new NewEvent(organizerId);
                 newEvent.ShowDialog();
             }
             else
             {
-                MessageBox.Show("Для добавления мероприятия необходимо войти в ситсему как организатор.",
+                MessageBox.Show("Для добавления мероприятия необходимо войти в систему как организатор.",
                     "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void newPlaceTool_Click(object sender, EventArgs e)
         {
-            NewPlace newPlace = new NewPlace();
-            newPlace.ShowDialog();
+            if (organizerId != Guid.Empty)
+            {
+                NewPlace newPlace = new NewPlace();
+                newPlace.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show("Для добавления площадки необходимо войти в систему как организатор.",
+                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void ticketsWNTool_Click(object sender, EventArgs e)
