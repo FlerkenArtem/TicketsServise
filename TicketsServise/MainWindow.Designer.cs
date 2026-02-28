@@ -315,14 +315,14 @@
             // buyerRegTool
             // 
             buyerRegTool.Name = "buyerRegTool";
-            buyerRegTool.Size = new Size(224, 26);
+            buyerRegTool.Size = new Size(183, 26);
             buyerRegTool.Text = "Покупатель";
             buyerRegTool.Click += buyerRegTool_Click;
             // 
             // organizerRegTool
             // 
             organizerRegTool.Name = "organizerRegTool";
-            organizerRegTool.Size = new Size(224, 26);
+            organizerRegTool.Size = new Size(183, 26);
             organizerRegTool.Text = "Организатор";
             organizerRegTool.Click += organizerRegTool_Click;
             // 
@@ -398,7 +398,7 @@
             // aboutTool
             // 
             aboutTool.Name = "aboutTool";
-            aboutTool.Size = new Size(187, 26);
+            aboutTool.Size = new Size(224, 26);
             aboutTool.Text = "О программе";
             // 
             // MainWindow
