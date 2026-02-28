@@ -31,6 +31,7 @@
             tableLayoutPanel = new TableLayoutPanel();
             logoPictureBox = new PictureBox();
             labelProductName = new Label();
+            labelVersion = new Label();
             labelCopyright = new Label();
             labelCompanyName = new Label();
             textBoxDescription = new TextBox();
@@ -46,6 +47,7 @@
             tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 67F));
             tableLayoutPanel.Controls.Add(logoPictureBox, 0, 0);
             tableLayoutPanel.Controls.Add(labelProductName, 1, 0);
+            tableLayoutPanel.Controls.Add(labelVersion, 1, 1);
             tableLayoutPanel.Controls.Add(labelCopyright, 1, 2);
             tableLayoutPanel.Controls.Add(labelCompanyName, 1, 3);
             tableLayoutPanel.Controls.Add(textBoxDescription, 1, 4);
@@ -55,8 +57,8 @@
             tableLayoutPanel.Margin = new Padding(4, 5, 4, 5);
             tableLayoutPanel.Name = "tableLayoutPanel";
             tableLayoutPanel.RowCount = 6;
-            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 17.4447174F));
-            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 2.21130228F));
+            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
+            tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
             tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
             tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 10F));
             tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
@@ -80,15 +82,26 @@
             // labelProductName
             // 
             labelProductName.Dock = DockStyle.Fill;
-            labelProductName.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 204);
             labelProductName.Location = new Point(191, 0);
             labelProductName.Margin = new Padding(8, 0, 4, 0);
-            labelProductName.MaximumSize = new Size(0, 52);
+            labelProductName.MaximumSize = new Size(0, 26);
             labelProductName.Name = "labelProductName";
-            labelProductName.Size = new Size(361, 52);
+            labelProductName.Size = new Size(361, 26);
             labelProductName.TabIndex = 19;
-            labelProductName.Text = "Платформа для организации мероприятий и продажи билетов";
+            labelProductName.Text = "Название продукта";
             labelProductName.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // labelVersion
+            // 
+            labelVersion.Dock = DockStyle.Fill;
+            labelVersion.Location = new Point(191, 40);
+            labelVersion.Margin = new Padding(8, 0, 4, 0);
+            labelVersion.MaximumSize = new Size(0, 26);
+            labelVersion.Name = "labelVersion";
+            labelVersion.Size = new Size(361, 26);
+            labelVersion.TabIndex = 0;
+            labelVersion.Text = "Версия";
+            labelVersion.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // labelCopyright
             // 
@@ -99,7 +112,7 @@
             labelCopyright.Name = "labelCopyright";
             labelCopyright.Size = new Size(361, 26);
             labelCopyright.TabIndex = 21;
-            labelCopyright.Text = "MIT license";
+            labelCopyright.Text = "Авторские права";
             labelCopyright.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // labelCompanyName
@@ -111,7 +124,7 @@
             labelCompanyName.Name = "labelCompanyName";
             labelCompanyName.Size = new Size(361, 26);
             labelCompanyName.TabIndex = 22;
-            labelCompanyName.Text = "FlerkenArtem";
+            labelCompanyName.Text = "Название организации";
             labelCompanyName.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // textBoxDescription
@@ -123,21 +136,22 @@
             textBoxDescription.Name = "textBoxDescription";
             textBoxDescription.ReadOnly = true;
             textBoxDescription.ScrollBars = ScrollBars.Both;
-            textBoxDescription.Size = new Size(361, 194);
+            textBoxDescription.Size = new Size(361, 193);
             textBoxDescription.TabIndex = 23;
             textBoxDescription.TabStop = false;
-            textBoxDescription.Text = "Учебный проект по дисциплине РПМ";
+            textBoxDescription.Text = "Описание";
             // 
             // okButton
             // 
             okButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             okButton.DialogResult = DialogResult.Cancel;
-            okButton.Location = new Point(452, 369);
+            okButton.Location = new Point(452, 368);
             okButton.Margin = new Padding(4, 5, 4, 5);
             okButton.Name = "okButton";
-            okButton.Size = new Size(100, 33);
+            okButton.Size = new Size(100, 34);
             okButton.TabIndex = 24;
             okButton.Text = "&ОК";
+            okButton.Click += okButton_Click;
             // 
             // About
             // 
@@ -155,7 +169,7 @@
             ShowIcon = false;
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterParent;
-            Text = "О программе";
+            Text = "About";
             tableLayoutPanel.ResumeLayout(false);
             tableLayoutPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)logoPictureBox).EndInit();
@@ -168,6 +182,7 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel;
         private System.Windows.Forms.PictureBox logoPictureBox;
         private System.Windows.Forms.Label labelProductName;
+        private System.Windows.Forms.Label labelVersion;
         private System.Windows.Forms.Label labelCopyright;
         private System.Windows.Forms.Label labelCompanyName;
         private System.Windows.Forms.TextBox textBoxDescription;
