@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TicketsServise.Struct
+﻿namespace TicketsServise.Struct
 {
     struct Ticket
     {
@@ -15,7 +11,7 @@ namespace TicketsServise.Struct
         public string EventName { get { return _eventName; } set { _eventName = value; } }
         public decimal Price { get { return _price; } set { _price = value; } }
         public DateTime EventDate { get { return _eventDate; } set { _eventDate = value; } }
-        
+
         public Ticket(int id, string eventName, decimal price, DateTime eventDate)
         {
             _id = id;

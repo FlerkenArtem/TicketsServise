@@ -1,18 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics.Eventing.Reader;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
-
-namespace TicketsServise.Interfaces
+﻿namespace TicketsServise.Interfaces
 {
     public partial class InterfacesDemoForm : Form
     {
         private List<TicketCollection> _collections = new List<TicketCollection>();
-        private BindingSource _collectionsSrc =new BindingSource();
+        private BindingSource _collectionsSrc = new BindingSource();
 
         public InterfacesDemoForm()
         {
