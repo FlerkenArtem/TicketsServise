@@ -102,6 +102,7 @@ namespace TicketsServise
                         new NpgsqlParameter("@place_to", placeTo)
                     };
                     var res = DatabaseHelper.ExecuteScalar(query, parameters);
+                    Close();
                 }
                 catch (Exception ex)
                 {

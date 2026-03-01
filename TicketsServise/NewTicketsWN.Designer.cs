@@ -79,6 +79,7 @@
             // eventComboBox
             // 
             eventComboBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            eventComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             eventComboBox.FormattingEnabled = true;
             eventComboBox.Location = new Point(12, 32);
             eventComboBox.Name = "eventComboBox";
