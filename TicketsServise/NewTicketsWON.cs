@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
-
-namespace TicketsServise
+﻿namespace TicketsServise
 {
     public partial class NewTicketsWON : Form
     {
-        public NewTicketsWON()
+        private Guid organigerId;
+        public NewTicketsWON(Guid id)
         {
             InitializeComponent();
         }

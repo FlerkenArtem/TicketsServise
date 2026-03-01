@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TicketsServise.Generics
+﻿namespace TicketsServise.Generics
 {
     public class Ticket
     {
@@ -17,7 +13,7 @@ namespace TicketsServise.Generics
             Price = price;
             EventDate = eventDate;
         }
-        public override string ToString() 
+        public override string ToString()
         {
             return $"[{Id}] {EventName} – {Price:C} ({EventDate:d})";
         }

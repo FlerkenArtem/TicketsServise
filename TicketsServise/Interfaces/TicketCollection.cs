@@ -1,8 +1,4 @@
-﻿using Npgsql.TypeMapping;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections;
 
 namespace TicketsServise.Interfaces
 {
@@ -33,7 +29,7 @@ namespace TicketsServise.Interfaces
         public Ticket this[int index] => _ticketList[index]; // индексатор для доступа к билету в коллекции по его позиции
 
         // реализация перечислителя для возможности перебора элементов коллекции с помощью foreach
-        public IEnumerator<Ticket> GetEnumerator() => _ticketList.GetEnumerator(); 
+        public IEnumerator<Ticket> GetEnumerator() => _ticketList.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         public int CompareTo(TicketCollection other) // сравнение коллекций билетов по стоимости
@@ -45,7 +41,7 @@ namespace TicketsServise.Interfaces
         public object Clone() // копия коллекции
         {
             var clone = new TicketCollection();
-            foreach (var ticket in _ticketList) 
+            foreach (var ticket in _ticketList)
             {
                 clone.AddTicket((Ticket)ticket.Clone());
             }
@@ -74,7 +70,7 @@ namespace TicketsServise.Interfaces
             }
         }
 
-        ~TicketCollection() 
+        ~TicketCollection()
         {
             Dispose(false);
         }

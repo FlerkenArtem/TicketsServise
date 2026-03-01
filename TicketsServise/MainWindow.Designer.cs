@@ -55,7 +55,6 @@
             organizerRegTool = new ToolStripMenuItem();
             loginTool = new ToolStripMenuItem();
             logoutTool = new ToolStripMenuItem();
-            newCardTool = new ToolStripMenuItem();
             organizerMenu = new ToolStripMenuItem();
             newEventTool = new ToolStripMenuItem();
             newPlaceTool = new ToolStripMenuItem();
@@ -64,6 +63,8 @@
             ticketsWONTool = new ToolStripMenuItem();
             infoMenu = new ToolStripMenuItem();
             aboutTool = new ToolStripMenuItem();
+            buyerMenu = new ToolStripMenuItem();
+            newCardTool = new ToolStripMenuItem();
             tabControl = new TabControl();
             tabControl.SuspendLayout();
             eventListPage.SuspendLayout();
@@ -111,6 +112,7 @@
             buyBtn.TabIndex = 4;
             buyBtn.Text = "К билетам";
             buyBtn.UseVisualStyleBackColor = true;
+            buyBtn.Click += buyBtn_Click;
             // 
             // eventsView
             // 
@@ -291,7 +293,7 @@
             // menuStrip
             // 
             menuStrip.ImageScalingSize = new Size(20, 20);
-            menuStrip.Items.AddRange(new ToolStripItem[] { accountMenu, organizerMenu, infoMenu });
+            menuStrip.Items.AddRange(new ToolStripItem[] { accountMenu, buyerMenu, organizerMenu, infoMenu });
             menuStrip.Location = new Point(0, 0);
             menuStrip.Name = "menuStrip";
             menuStrip.Size = new Size(782, 28);
@@ -300,7 +302,7 @@
             // 
             // accountMenu
             // 
-            accountMenu.DropDownItems.AddRange(new ToolStripItem[] { regTool, loginTool, logoutTool, newCardTool });
+            accountMenu.DropDownItems.AddRange(new ToolStripItem[] { regTool, loginTool, logoutTool });
             accountMenu.Name = "accountMenu";
             accountMenu.Size = new Size(77, 24);
             accountMenu.Text = "Аккаунт";
@@ -315,14 +317,14 @@
             // buyerRegTool
             // 
             buyerRegTool.Name = "buyerRegTool";
-            buyerRegTool.Size = new Size(183, 26);
+            buyerRegTool.Size = new Size(224, 26);
             buyerRegTool.Text = "Покупатель";
             buyerRegTool.Click += buyerRegTool_Click;
             // 
             // organizerRegTool
             // 
             organizerRegTool.Name = "organizerRegTool";
-            organizerRegTool.Size = new Size(183, 26);
+            organizerRegTool.Size = new Size(224, 26);
             organizerRegTool.Text = "Организатор";
             organizerRegTool.Click += organizerRegTool_Click;
             // 
@@ -340,13 +342,6 @@
             logoutTool.Size = new Size(234, 26);
             logoutTool.Text = "Выйти";
             logoutTool.Click += logoutTool_Click;
-            // 
-            // newCardTool
-            // 
-            newCardTool.Enabled = false;
-            newCardTool.Name = "newCardTool";
-            newCardTool.Size = new Size(234, 26);
-            newCardTool.Text = "Добавить карту";
             // 
             // organizerMenu
             // 
@@ -381,14 +376,14 @@
             // ticketsWNTool
             // 
             ticketsWNTool.Name = "ticketsWNTool";
-            ticketsWNTool.Size = new Size(224, 26);
+            ticketsWNTool.Size = new Size(218, 26);
             ticketsWNTool.Text = "С номером места";
             ticketsWNTool.Click += ticketsWNTool_Click;
             // 
             // ticketsWONTool
             // 
             ticketsWONTool.Name = "ticketsWONTool";
-            ticketsWONTool.Size = new Size(224, 26);
+            ticketsWONTool.Size = new Size(218, 26);
             ticketsWONTool.Text = "Без номера места";
             ticketsWONTool.Click += ticketsWONTool_Click;
             // 
@@ -405,6 +400,22 @@
             aboutTool.Size = new Size(187, 26);
             aboutTool.Text = "О программе";
             aboutTool.Click += aboutTool_Click;
+            // 
+            // buyerMenu
+            // 
+            buyerMenu.DropDownItems.AddRange(new ToolStripItem[] { newCardTool });
+            buyerMenu.Enabled = false;
+            buyerMenu.Name = "buyerMenu";
+            buyerMenu.Size = new Size(148, 24);
+            buyerMenu.Text = "Меню покупателя";
+            buyerMenu.Visible = false;
+            // 
+            // newCardTool
+            // 
+            newCardTool.Name = "newCardTool";
+            newCardTool.Size = new Size(224, 26);
+            newCardTool.Text = "Добавить карту";
+            newCardTool.Click += newCardTool_Click;
             // 
             // MainWindow
             // 
@@ -462,12 +473,13 @@
         private Label label3;
         private ComboBox placeComboBox;
         private Label label2;
-        private ToolStripMenuItem newCardTool;
         private Button updateBtn;
         private Button saveTicketBtn;
         private DataGridView ticketView;
         private ToolStripMenuItem ticketsTool;
         private ToolStripMenuItem ticketsWNTool;
         private ToolStripMenuItem ticketsWONTool;
+        private ToolStripMenuItem buyerMenu;
+        private ToolStripMenuItem newCardTool;
     }
 }

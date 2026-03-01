@@ -159,17 +159,6 @@ namespace TicketsServise
         }
         private void okBtn_Click(object sender, EventArgs e)
         {
-            string strOrgId;
-            if (organizerId != Guid.Empty)
-            {
-                strOrgId = organizerId.ToString();
-            }
-            else
-            {
-                MessageBox.Show("ID организатора пуст.",
-                        "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
             string name = nameTextBox.Text;
             string dateTime = eventDateTime.ToString("yyyy-MM-dd hh:mm:ss");
             string? placeId;
@@ -207,8 +196,7 @@ namespace TicketsServise
             }
             string[] performers = _performers.Keys.ToArray();
             string?[] performersInfo = _performers.Values.ToArray();
-            if (string.IsNullOrEmpty(strOrgId) ||
-                string.IsNullOrEmpty(name) ||
+            if (string.IsNullOrEmpty(name) ||
                 string.IsNullOrEmpty(dateTime) ||
                 string.IsNullOrEmpty(placeId) ||
                 string.IsNullOrEmpty(typeId) ||
@@ -225,7 +213,7 @@ namespace TicketsServise
                             @performers_array, @performers_info_array);";
                 var parameters = new NpgsqlParameter[]
                 {
-                    new NpgsqlParameter("@id", strOrgId),
+                    new NpgsqlParameter("@id", organizerId),
                     new NpgsqlParameter("@name", name),
                     new NpgsqlParameter("@datetime", dateTime),
                     new NpgsqlParameter("@place_id", placeId),

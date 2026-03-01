@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TicketsServise.Struct
+﻿namespace TicketsServise.Struct
 {
     public class ClassTicket
     {

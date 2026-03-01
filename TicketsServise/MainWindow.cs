@@ -44,6 +44,10 @@
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 e.Cancel = true;
             }
+            else if (buyerId != Guid.Empty && e.TabPageIndex == 1)
+            {
+                UpdateTicketList();
+            }
         }
         private void logoutTool_Click(object sender, EventArgs e)
         {
@@ -89,16 +93,25 @@
             organizerMenu.Available = true;
             loginTool.Visible = false;
             loginTool.Available = false;
+            buyerRegTool.Visible = false;
+            buyerRegTool.Available = false;
+            organizerRegTool.Visible = false;
+            organizerRegTool.Available = false;
         }
         private void BuyerToolsLoad(Guid newId)
         {
             organizerId = Guid.Empty;
             buyerId = newId;
-            newCardTool.Available = true;
             logoutTool.Available = true;
             buyBtn.Enabled = true;
             loginTool.Visible = false;
             loginTool.Available = false;
+            buyerMenu.Visible = true;
+            buyerMenu.Available = true;
+            buyerRegTool.Visible = false;
+            buyerRegTool.Available = false;
+            organizerRegTool.Visible = false;
+            organizerRegTool.Available = false;
         }
 
         private void aboutTool_Click(object sender, EventArgs e)
@@ -137,14 +150,46 @@
 
         private void ticketsWNTool_Click(object sender, EventArgs e)
         {
-            NewTicketsWN newTickets = new NewTicketsWN();
-            newTickets.ShowDialog();
+            if (organizerId == Guid.Empty)
+            {
+                MessageBox.Show("Для добавления билетов необходимо войти в систему как организатор.",
+                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            else
+            {
+                NewTicketsWN newTickets = new NewTicketsWN(organizerId);
+                newTickets.ShowDialog();
+            }
         }
 
         private void ticketsWONTool_Click(object sender, EventArgs e)
         {
-            NewTicketsWON newTickets = new NewTicketsWON();
-            newTickets.ShowDialog();
+            if (organizerId == Guid.Empty)
+            {
+                MessageBox.Show("Для добавления билетов необходимо войти в систему как организатор.",
+                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            else
+            {
+                NewTicketsWON newTickets = new NewTicketsWON(organizerId);
+                newTickets.ShowDialog();
+            }
+        }
+
+        private void buyBtn_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void newCardTool_Click(object sender, EventArgs e)
+        {
+
+        }
+        private void UpdateTicketList()
+        {
+
         }
     }
 }

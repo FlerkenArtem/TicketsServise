@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.Collections;
 using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 
 namespace TicketsServise.Generics
 {
@@ -186,9 +180,9 @@ namespace TicketsServise.Generics
                 ticketQueue.Enqueue(ticket);
                 ResetAllBindings();
             }
-            catch (Exception ex) 
-            { 
-                MessageBox.Show(ex.Message); 
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
         private void dequeueBtn_Click(object sender, EventArgs e)
@@ -229,9 +223,9 @@ namespace TicketsServise.Generics
                 ticketStack.Push(ticket);
                 ResetAllBindings();
             }
-            catch (Exception ex) 
-            { 
-                MessageBox.Show(ex.Message); 
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
         private void popBtn_Click(object sender, EventArgs e)

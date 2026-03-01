@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-
-namespace TicketsServise.Interfaces
+﻿namespace TicketsServise.Interfaces
 {
     public class TicketCollectionComparer : IComparer<TicketCollection>
     {
