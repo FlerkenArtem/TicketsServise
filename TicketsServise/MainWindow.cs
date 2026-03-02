@@ -4,6 +4,7 @@
     {
         private Guid buyerId;
         private Guid organizerId;
+        private Guid eventId;
         public MainWindow()
         {
             InitializeComponent();
@@ -180,7 +181,17 @@
 
         private void buyBtn_Click(object sender, EventArgs e)
         {
-
+            if (buyerId == Guid.Empty || eventId == Guid.Empty)
+            {
+                MessageBox.Show("Для покупки билетов необходимо войти в систему как покупатель.",
+                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            else
+            {
+                Tickets tickets = new Tickets(eventId);
+                tickets.ShowDialog();
+            }
         }
 
         private void newCardTool_Click(object sender, EventArgs e)
