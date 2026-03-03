@@ -98,6 +98,7 @@
             delTicketBtn.TabIndex = 6;
             delTicketBtn.Text = "Удалить из корзины";
             delTicketBtn.UseVisualStyleBackColor = true;
+            delTicketBtn.Click += delTicketBtn_Click;
             // 
             // sumLabel
             // 
@@ -106,7 +107,7 @@
             sumLabel.Name = "sumLabel";
             sumLabel.Size = new Size(194, 35);
             sumLabel.TabIndex = 7;
-            sumLabel.Text = "Сумма: 0 рублей";
+            sumLabel.Text = "Сумма: 0.00 рублей";
             sumLabel.TextAlign = ContentAlignment.TopRight;
             // 
             // Tickets

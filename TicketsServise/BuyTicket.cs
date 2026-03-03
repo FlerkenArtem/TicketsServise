@@ -5,18 +5,41 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
 
 namespace TicketsServise
 {
     public partial class BuyTicket : Form
     {
-        Guid ticketId = Guid.Empty;
-        Guid buyerId = Guid.Empty;
-        public BuyTicket(Guid ticket, Guid buyer)
+        private Guid BuyerId = Guid.Empty;
+        private List<Ticket> _tickets = new List<Ticket>();
+        public BuyTicket(List<Ticket> tickets, Guid buyer)
         {
-            this.ticketId = ticket;
-            this.buyerId = buyer;
+            BuyerId = buyer;
+            foreach (Ticket ticket in tickets)
+            {
+
+            }
             InitializeComponent();
+        }
+        private byte[] GenDocument(Ticket ticket)
+        {
+            byte[] doc = Document.Create(container =>
+            {
+                container.Page(page =>
+                {
+                    page.Size(PageSizes.A4);
+                    page.Margin(2, Unit.Centimetre);
+                    page.PageColor(Colors.White);
+                    page.DefaultTextStyle(x => x.FontSize(20));
+
+                    page.Header()
+                    .Text("Билет на мероприятие: ")
+                })
+            }).GeneratePdf();
+            return doc;
         }
     }
 }
