@@ -194,5 +194,25 @@
         {
 
         }
+
+        private void saveTicketBtn_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void updateBtn_Click(object sender, EventArgs e)
+        {
+            UpdateTicketList();
+        }
+
+        private void filtersOkBtn_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void searchBtn_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

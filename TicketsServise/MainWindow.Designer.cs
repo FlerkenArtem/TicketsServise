@@ -31,7 +31,6 @@
             TabControl tabControl;
             eventListPage = new TabPage();
             buyBtn = new Button();
-            eventsView = new DataGridView();
             searchText = new TextBox();
             searchBtn = new Button();
             filtersGroupBox = new GroupBox();
@@ -47,7 +46,6 @@
             ticketPage = new TabPage();
             updateBtn = new Button();
             saveTicketBtn = new Button();
-            ticketView = new DataGridView();
             menuStrip = new MenuStrip();
             accountMenu = new ToolStripMenuItem();
             regTool = new ToolStripMenuItem();
@@ -63,13 +61,14 @@
             ticketsWONTool = new ToolStripMenuItem();
             infoMenu = new ToolStripMenuItem();
             aboutTool = new ToolStripMenuItem();
+            eventsList = new ListBox();
+            ticketsList = new ListBox();
+            cancelFilterBtn = new Button();
             tabControl = new TabControl();
             tabControl.SuspendLayout();
             eventListPage.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)eventsView).BeginInit();
             filtersGroupBox.SuspendLayout();
             ticketPage.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)ticketView).BeginInit();
             menuStrip.SuspendLayout();
             SuspendLayout();
             // 
@@ -87,8 +86,8 @@
             // 
             // eventListPage
             // 
+            eventListPage.Controls.Add(eventsList);
             eventListPage.Controls.Add(buyBtn);
-            eventListPage.Controls.Add(eventsView);
             eventListPage.Controls.Add(searchText);
             eventListPage.Controls.Add(searchBtn);
             eventListPage.Controls.Add(filtersGroupBox);
@@ -112,16 +111,6 @@
             buyBtn.UseVisualStyleBackColor = true;
             buyBtn.Click += buyBtn_Click;
             // 
-            // eventsView
-            // 
-            eventsView.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            eventsView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            eventsView.Location = new Point(6, 39);
-            eventsView.Name = "eventsView";
-            eventsView.RowHeadersWidth = 51;
-            eventsView.Size = new Size(570, 400);
-            eventsView.TabIndex = 3;
-            // 
             // searchText
             // 
             searchText.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
@@ -139,10 +128,12 @@
             searchBtn.TabIndex = 1;
             searchBtn.Text = "Поиск";
             searchBtn.UseVisualStyleBackColor = true;
+            searchBtn.Click += searchBtn_Click;
             // 
             // filtersGroupBox
             // 
             filtersGroupBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
+            filtersGroupBox.Controls.Add(cancelFilterBtn);
             filtersGroupBox.Controls.Add(genreComboBox);
             filtersGroupBox.Controls.Add(label4);
             filtersGroupBox.Controls.Add(typeComboBox);
@@ -244,12 +235,13 @@
             filtersOkBtn.TabIndex = 0;
             filtersOkBtn.Text = "Применить";
             filtersOkBtn.UseVisualStyleBackColor = true;
+            filtersOkBtn.Click += filtersOkBtn_Click;
             // 
             // ticketPage
             // 
+            ticketPage.Controls.Add(ticketsList);
             ticketPage.Controls.Add(updateBtn);
             ticketPage.Controls.Add(saveTicketBtn);
-            ticketPage.Controls.Add(ticketView);
             ticketPage.Location = new Point(4, 29);
             ticketPage.Name = "ticketPage";
             ticketPage.Padding = new Padding(3);
@@ -267,6 +259,7 @@
             updateBtn.TabIndex = 2;
             updateBtn.Text = "Обновить";
             updateBtn.UseVisualStyleBackColor = true;
+            updateBtn.Click += updateBtn_Click;
             // 
             // saveTicketBtn
             // 
@@ -277,16 +270,7 @@
             saveTicketBtn.TabIndex = 1;
             saveTicketBtn.Text = "Сохранить билет";
             saveTicketBtn.UseVisualStyleBackColor = true;
-            // 
-            // ticketView
-            // 
-            ticketView.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            ticketView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            ticketView.Location = new Point(6, 6);
-            ticketView.Name = "ticketView";
-            ticketView.RowHeadersWidth = 51;
-            ticketView.Size = new Size(738, 433);
-            ticketView.TabIndex = 0;
+            saveTicketBtn.Click += saveTicketBtn_Click;
             // 
             // menuStrip
             // 
@@ -399,6 +383,33 @@
             aboutTool.Text = "О программе";
             aboutTool.Click += aboutTool_Click;
             // 
+            // eventsList
+            // 
+            eventsList.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            eventsList.FormattingEnabled = true;
+            eventsList.Location = new Point(6, 39);
+            eventsList.Name = "eventsList";
+            eventsList.Size = new Size(570, 384);
+            eventsList.TabIndex = 5;
+            // 
+            // ticketsList
+            // 
+            ticketsList.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            ticketsList.FormattingEnabled = true;
+            ticketsList.Location = new Point(6, 6);
+            ticketsList.Name = "ticketsList";
+            ticketsList.Size = new Size(738, 424);
+            ticketsList.TabIndex = 3;
+            // 
+            // cancelFilterBtn
+            // 
+            cancelFilterBtn.Location = new Point(7, 395);
+            cancelFilterBtn.Name = "cancelFilterBtn";
+            cancelFilterBtn.Size = new Size(149, 29);
+            cancelFilterBtn.TabIndex = 9;
+            cancelFilterBtn.Text = "Сброс";
+            cancelFilterBtn.UseVisualStyleBackColor = true;
+            // 
             // MainWindow
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -413,11 +424,9 @@
             tabControl.ResumeLayout(false);
             eventListPage.ResumeLayout(false);
             eventListPage.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)eventsView).EndInit();
             filtersGroupBox.ResumeLayout(false);
             filtersGroupBox.PerformLayout();
             ticketPage.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)ticketView).EndInit();
             menuStrip.ResumeLayout(false);
             menuStrip.PerformLayout();
             ResumeLayout(false);
@@ -444,7 +453,6 @@
         private GroupBox filtersGroupBox;
         private Button filtersOkBtn;
         private Button buyBtn;
-        private DataGridView eventsView;
         private TextBox searchText;
         private Button searchBtn;
         private ComboBox cityComboBox;
@@ -457,9 +465,11 @@
         private Label label2;
         private Button updateBtn;
         private Button saveTicketBtn;
-        private DataGridView ticketView;
         private ToolStripMenuItem ticketsTool;
         private ToolStripMenuItem ticketsWNTool;
         private ToolStripMenuItem ticketsWONTool;
+        private ListBox eventsList;
+        private Button cancelFilterBtn;
+        private ListBox ticketsList;
     }
 }
