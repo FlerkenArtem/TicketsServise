@@ -30,10 +30,12 @@
         {
             TabControl tabControl;
             eventListPage = new TabPage();
+            eventsList = new ListBox();
             buyBtn = new Button();
             searchText = new TextBox();
             searchBtn = new Button();
             filtersGroupBox = new GroupBox();
+            cancelFilterBtn = new Button();
             genreComboBox = new ComboBox();
             label4 = new Label();
             typeComboBox = new ComboBox();
@@ -44,6 +46,7 @@
             label1 = new Label();
             filtersOkBtn = new Button();
             ticketPage = new TabPage();
+            ticketsList = new ListBox();
             updateBtn = new Button();
             saveTicketBtn = new Button();
             menuStrip = new MenuStrip();
@@ -61,9 +64,6 @@
             ticketsWONTool = new ToolStripMenuItem();
             infoMenu = new ToolStripMenuItem();
             aboutTool = new ToolStripMenuItem();
-            eventsList = new ListBox();
-            ticketsList = new ListBox();
-            cancelFilterBtn = new Button();
             tabControl = new TabControl();
             tabControl.SuspendLayout();
             eventListPage.SuspendLayout();
@@ -98,6 +98,15 @@
             eventListPage.TabIndex = 0;
             eventListPage.Text = "Мероприятия";
             eventListPage.UseVisualStyleBackColor = true;
+            // 
+            // eventsList
+            // 
+            eventsList.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            eventsList.FormattingEnabled = true;
+            eventsList.Location = new Point(6, 39);
+            eventsList.Name = "eventsList";
+            eventsList.Size = new Size(570, 384);
+            eventsList.TabIndex = 5;
             // 
             // buyBtn
             // 
@@ -150,9 +159,19 @@
             filtersGroupBox.TabStop = false;
             filtersGroupBox.Text = "Фильтры";
             // 
+            // cancelFilterBtn
+            // 
+            cancelFilterBtn.Location = new Point(7, 395);
+            cancelFilterBtn.Name = "cancelFilterBtn";
+            cancelFilterBtn.Size = new Size(149, 29);
+            cancelFilterBtn.TabIndex = 9;
+            cancelFilterBtn.Text = "Сброс";
+            cancelFilterBtn.UseVisualStyleBackColor = true;
+            // 
             // genreComboBox
             // 
             genreComboBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            genreComboBox.Enabled = false;
             genreComboBox.FormattingEnabled = true;
             genreComboBox.Location = new Point(6, 208);
             genreComboBox.Name = "genreComboBox";
@@ -172,6 +191,7 @@
             // typeComboBox
             // 
             typeComboBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            typeComboBox.Enabled = false;
             typeComboBox.FormattingEnabled = true;
             typeComboBox.Location = new Point(6, 154);
             typeComboBox.Name = "typeComboBox";
@@ -191,6 +211,7 @@
             // placeComboBox
             // 
             placeComboBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            placeComboBox.Enabled = false;
             placeComboBox.FormattingEnabled = true;
             placeComboBox.Location = new Point(6, 100);
             placeComboBox.Name = "placeComboBox";
@@ -249,6 +270,15 @@
             ticketPage.TabIndex = 1;
             ticketPage.Text = "Мои билеты";
             ticketPage.UseVisualStyleBackColor = true;
+            // 
+            // ticketsList
+            // 
+            ticketsList.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            ticketsList.FormattingEnabled = true;
+            ticketsList.Location = new Point(6, 6);
+            ticketsList.Name = "ticketsList";
+            ticketsList.Size = new Size(738, 424);
+            ticketsList.TabIndex = 3;
             // 
             // updateBtn
             // 
@@ -382,33 +412,6 @@
             aboutTool.Size = new Size(187, 26);
             aboutTool.Text = "О программе";
             aboutTool.Click += aboutTool_Click;
-            // 
-            // eventsList
-            // 
-            eventsList.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            eventsList.FormattingEnabled = true;
-            eventsList.Location = new Point(6, 39);
-            eventsList.Name = "eventsList";
-            eventsList.Size = new Size(570, 384);
-            eventsList.TabIndex = 5;
-            // 
-            // ticketsList
-            // 
-            ticketsList.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            ticketsList.FormattingEnabled = true;
-            ticketsList.Location = new Point(6, 6);
-            ticketsList.Name = "ticketsList";
-            ticketsList.Size = new Size(738, 424);
-            ticketsList.TabIndex = 3;
-            // 
-            // cancelFilterBtn
-            // 
-            cancelFilterBtn.Location = new Point(7, 395);
-            cancelFilterBtn.Name = "cancelFilterBtn";
-            cancelFilterBtn.Size = new Size(149, 29);
-            cancelFilterBtn.TabIndex = 9;
-            cancelFilterBtn.Text = "Сброс";
-            cancelFilterBtn.UseVisualStyleBackColor = true;
             // 
             // MainWindow
             // 

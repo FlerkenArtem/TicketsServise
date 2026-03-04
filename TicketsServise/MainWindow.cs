@@ -1,12 +1,24 @@
-﻿namespace TicketsServise
+﻿using Microsoft.Extensions.Logging;
+using Npgsql;
+using System.Data;
+using System.Numerics;
+
+namespace TicketsServise
 {
     public partial class MainWindow : Form
     {
         private Guid buyerId;
         private Guid organizerId;
         private Guid eventId;
+        private List<EventsInfo> _events;
+        private List<TicketsInfo> _tickets;
+        private Dictionary<Guid, string> _cityFilter;
+        private Dictionary<Guid, string> _placeFilter;
+        private Dictionary<Guid, string> _typeFilter;
+        private Dictionary<Guid, string> _genreFilter;
         public MainWindow()
         {
+            LoadEvents();
             InitializeComponent();
         }
         private void buyerRegTool_Click(object sender, EventArgs e)
@@ -47,7 +59,11 @@
             }
             else if (buyerId != Guid.Empty && e.TabPageIndex == 1)
             {
-                UpdateTicketList();
+                LoadTickets();
+            }
+            else if (e.TabPageIndex == 0)
+            {
+                LoadEvents();
             }
         }
         private void logoutTool_Click(object sender, EventArgs e)
@@ -190,9 +206,255 @@
                 tickets.ShowDialog();
             }
         }
-        private void UpdateTicketList()
+        private void LoadEvents()
         {
+            _events.Clear();
+            try
+            {
+                var query = @"SELECT 
+                            event_id, 
+                            event_name,
+                            performers,
+                            tickets_available,
+                            city,
+                            place,
+                            type,
+                            genre,
+                            date_display
+                            FROM event_info;";
+                DataTable dt = DatabaseHelper.ExecuteQuery(query);
+                foreach (DataRow row in dt.Rows)
+                {
+                    EventsInfo eventInfo = new EventsInfo(
+                        id: row.Field<Guid>("event_id"),
+                        name: row.Field<string>("event_name"),
+                        performers: row.Field<string>("performers"),
+                        ticketsAvailable: row.Field<long>("tickets_available"),
+                        city: row.Field<string>("city"),
+                        place: row.Field<string>("place"),
+                        type: row.Field<string>("type"),
+                        genre: row.Field<string>("genre"),
+                        dateTime: row.Field<string>("date_display")
+                    );
+                    _events.Add(eventInfo);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString(),
+                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+        }
+        private void LoadEvents(string city)
+        {
+            _events.Clear();
+            try
+            {
+                var query = @"SELECT 
+                            event_id, 
+                            event_name,
+                            performers,
+                            tickets_available,
+                            city,
+                            place,
+                            type,
+                            genre,
+                            date_display
+                            FROM event_info
+                            WHERE city = @filter_city;";
+                var parameters = new NpgsqlParameter[]
+                {
+                    new NpgsqlParameter("@filter_city", city)
+                };
+                DataTable dt = DatabaseHelper.ExecuteQuery(query);
+                foreach (DataRow row in dt.Rows)
+                {
+                    EventsInfo eventInfo = new EventsInfo(
+                        id: row.Field<Guid>("event_id"),
+                        name: row.Field<string>("event_name"),
+                        performers: row.Field<string>("performers"),
+                        ticketsAvailable: row.Field<long>("tickets_available"),
+                        city: row.Field<string>("city"),
+                        place: row.Field<string>("place"),
+                        type: row.Field<string>("type"),
+                        genre: row.Field<string>("genre"),
+                        dateTime: row.Field<string>("date_display")
+                    );
+                    _events.Add(eventInfo);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString(),
+                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+        }
+        private void LoadEvents(string city, string place)
+        {
+            _events.Clear();
+            try
+            {
+                var query = @"SELECT 
+                            event_id, 
+                            event_name,
+                            performers,
+                            tickets_available,
+                            city,
+                            place,
+                            type,
+                            genre,
+                            date_display
+                            FROM event_info
+                            WHERE city = @filter_city
+                            AND place = @filter_place;";
+                var parameters = new NpgsqlParameter[]
+                {
+                    new NpgsqlParameter("@filter_city", city),
+                    new NpgsqlParameter("@filter_place", place),
+                };
+                DataTable dt = DatabaseHelper.ExecuteQuery(query);
+                foreach (DataRow row in dt.Rows)
+                {
+                    EventsInfo eventInfo = new EventsInfo(
+                        id: row.Field<Guid>("event_id"),
+                        name: row.Field<string>("event_name"),
+                        performers: row.Field<string>("performers"),
+                        ticketsAvailable: row.Field<long>("tickets_available"),
+                        city: row.Field<string>("city"),
+                        place: row.Field<string>("place"),
+                        type: row.Field<string>("type"),
+                        genre: row.Field<string>("genre"),
+                        dateTime: row.Field<string>("date_display")
+                    );
+                    _events.Add(eventInfo);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString(),
+                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+        }
+        private void LoadEvents(string city, string place, string type)
+        {
+            _events.Clear();
+            try
+            {
+                var query = @"SELECT 
+                            event_id, 
+                            event_name,
+                            performers,
+                            tickets_available,
+                            city,
+                            place,
+                            type,
+                            genre,
+                            date_display
+                            FROM event_info
+                            WHERE city = @filter_city
+                            AND place = @filter_place
+                            AND type = @filter_type;";
+                DataTable dt = DatabaseHelper.ExecuteQuery(query);
+                foreach (DataRow row in dt.Rows)
+                {
+                    EventsInfo eventInfo = new EventsInfo(
+                        id: row.Field<Guid>("event_id"),
+                        name: row.Field<string>("event_name"),
+                        performers: row.Field<string>("performers"),
+                        ticketsAvailable: row.Field<long>("tickets_available"),
+                        city: row.Field<string>("city"),
+                        place: row.Field<string>("place"),
+                        type: row.Field<string>("type"),
+                        genre: row.Field<string>("genre"),
+                        dateTime: row.Field<string>("date_display")
+                    );
+                    _events.Add(eventInfo);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString(),
+                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+        }
+        private void LoadEvents(string city, string place, string type, string genre)
+        {
+            _events.Clear();
+            try
+            {
+                var query = @"SELECT 
+                            event_id, 
+                            event_name,
+                            performers,
+                            tickets_available,
+                            city,
+                            place,
+                            type,
+                            genre,
+                            date_display
+                            FROM event_info
+                            WHERE city = @filter_city
+                            AND place = @filter_place
+                            AND type = @filter_type
+                            AND genre = @filter_genre;";
+                DataTable dt = DatabaseHelper.ExecuteQuery(query);
+                foreach (DataRow row in dt.Rows)
+                {
+                    EventsInfo eventInfo = new EventsInfo(
+                        id: row.Field<Guid>("event_id"),
+                        name: row.Field<string>("event_name"),
+                        performers: row.Field<string>("performers"),
+                        ticketsAvailable: row.Field<long>("tickets_available"),
+                        city: row.Field<string>("city"),
+                        place: row.Field<string>("place"),
+                        type: row.Field<string>("type"),
+                        genre: row.Field<string>("genre"),
+                        dateTime: row.Field<string>("date_display")
+                    );
+                    _events.Add(eventInfo);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString(),
+                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+        }
+        private void LoadTickets()
+        {
+            if (buyerId != Guid.Empty)
+            {
+                try
+                {
+                    var query = "SELECT tickets_info (@buyer_id);";
+                    var parameters = new NpgsqlParameter[]
+                    {
+                        new NpgsqlParameter("@buyer_id", buyerId)
+                    };
+                    DataTable dt = DatabaseHelper.ExecuteQuery(query);
+                    foreach (DataRow row in dt.Rows)
+                    {
 
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.ToString(),
+                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+            else
+            {
+                MessageBox.Show("Отсутствует ID покупателя",
+                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
         }
 
         private void saveTicketBtn_Click(object sender, EventArgs e)
@@ -202,7 +464,7 @@
 
         private void updateBtn_Click(object sender, EventArgs e)
         {
-            UpdateTicketList();
+            LoadTickets();
         }
 
         private void filtersOkBtn_Click(object sender, EventArgs e)
