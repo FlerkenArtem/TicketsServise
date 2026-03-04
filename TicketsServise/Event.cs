@@ -6,11 +6,11 @@ namespace TicketsServise
 {
     public class Event
     {
-        private Guid Id { get; set; }
-        private string Name { get; set; }
-        private string Orzanizer { get; set; }
-        private DateTime EventDateTime { get; set; }
-        private string Place { get; set; }
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public string Orzanizer { get; set; }
+        public DateTime EventDateTime { get; set; }
+        public string Place { get; set; }
         public Event(Guid id, string name, string orzanizer, DateTime eventDateTime, string place)
         {
             Id = id;

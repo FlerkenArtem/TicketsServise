@@ -54,7 +54,6 @@
         {
             buyerId = Guid.Empty;
             organizerId = Guid.Empty;
-            newCardTool.Enabled = false;
             organizerMenu.Enabled = false;
             organizerMenu.Visible = false;
             logoutTool.Enabled = false;
@@ -107,8 +106,6 @@
             buyBtn.Enabled = true;
             loginTool.Visible = false;
             loginTool.Available = false;
-            buyerMenu.Visible = true;
-            buyerMenu.Available = true;
             buyerRegTool.Visible = false;
             buyerRegTool.Available = false;
             organizerRegTool.Visible = false;
@@ -189,14 +186,9 @@
             }
             else
             {
-                Tickets tickets = new Tickets(eventId);
+                Tickets tickets = new Tickets(eventId, buyerId);
                 tickets.ShowDialog();
             }
-        }
-
-        private void newCardTool_Click(object sender, EventArgs e)
-        {
-
         }
         private void UpdateTicketList()
         {

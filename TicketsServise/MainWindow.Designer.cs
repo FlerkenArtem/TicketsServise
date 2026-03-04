@@ -63,8 +63,6 @@
             ticketsWONTool = new ToolStripMenuItem();
             infoMenu = new ToolStripMenuItem();
             aboutTool = new ToolStripMenuItem();
-            buyerMenu = new ToolStripMenuItem();
-            newCardTool = new ToolStripMenuItem();
             tabControl = new TabControl();
             tabControl.SuspendLayout();
             eventListPage.SuspendLayout();
@@ -293,7 +291,7 @@
             // menuStrip
             // 
             menuStrip.ImageScalingSize = new Size(20, 20);
-            menuStrip.Items.AddRange(new ToolStripItem[] { accountMenu, buyerMenu, organizerMenu, infoMenu });
+            menuStrip.Items.AddRange(new ToolStripItem[] { accountMenu, organizerMenu, infoMenu });
             menuStrip.Location = new Point(0, 0);
             menuStrip.Name = "menuStrip";
             menuStrip.Size = new Size(782, 28);
@@ -317,14 +315,14 @@
             // buyerRegTool
             // 
             buyerRegTool.Name = "buyerRegTool";
-            buyerRegTool.Size = new Size(224, 26);
+            buyerRegTool.Size = new Size(183, 26);
             buyerRegTool.Text = "Покупатель";
             buyerRegTool.Click += buyerRegTool_Click;
             // 
             // organizerRegTool
             // 
             organizerRegTool.Name = "organizerRegTool";
-            organizerRegTool.Size = new Size(224, 26);
+            organizerRegTool.Size = new Size(183, 26);
             organizerRegTool.Text = "Организатор";
             organizerRegTool.Click += organizerRegTool_Click;
             // 
@@ -401,22 +399,6 @@
             aboutTool.Text = "О программе";
             aboutTool.Click += aboutTool_Click;
             // 
-            // buyerMenu
-            // 
-            buyerMenu.DropDownItems.AddRange(new ToolStripItem[] { newCardTool });
-            buyerMenu.Enabled = false;
-            buyerMenu.Name = "buyerMenu";
-            buyerMenu.Size = new Size(148, 24);
-            buyerMenu.Text = "Меню покупателя";
-            buyerMenu.Visible = false;
-            // 
-            // newCardTool
-            // 
-            newCardTool.Name = "newCardTool";
-            newCardTool.Size = new Size(224, 26);
-            newCardTool.Text = "Добавить карту";
-            newCardTool.Click += newCardTool_Click;
-            // 
             // MainWindow
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -479,7 +461,5 @@
         private ToolStripMenuItem ticketsTool;
         private ToolStripMenuItem ticketsWNTool;
         private ToolStripMenuItem ticketsWONTool;
-        private ToolStripMenuItem buyerMenu;
-        private ToolStripMenuItem newCardTool;
     }
 }
