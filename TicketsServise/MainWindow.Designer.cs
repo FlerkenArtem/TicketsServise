@@ -197,6 +197,7 @@
             typeComboBox.Name = "typeComboBox";
             typeComboBox.Size = new Size(151, 28);
             typeComboBox.TabIndex = 6;
+            typeComboBox.SelectedIndexChanged += typeComboBox_SelectedIndexChanged;
             // 
             // label3
             // 
@@ -217,6 +218,7 @@
             placeComboBox.Name = "placeComboBox";
             placeComboBox.Size = new Size(151, 28);
             placeComboBox.TabIndex = 4;
+            placeComboBox.SelectedIndexChanged += placeComboBox_SelectedIndexChanged;
             // 
             // label2
             // 
@@ -236,6 +238,7 @@
             cityComboBox.Name = "cityComboBox";
             cityComboBox.Size = new Size(151, 28);
             cityComboBox.TabIndex = 2;
+            cityComboBox.SelectedIndexChanged += cityComboBox_SelectedIndexChanged;
             // 
             // label1
             // 

@@ -127,13 +127,11 @@ namespace TicketsServise
             organizerRegTool.Visible = false;
             organizerRegTool.Available = false;
         }
-
         private void aboutTool_Click(object sender, EventArgs e)
         {
             About about = new About();
             about.Show();
         }
-
         private void newEventTool_Click(object sender, EventArgs e)
         {
             if (organizerId != Guid.Empty)
@@ -147,7 +145,6 @@ namespace TicketsServise
                     "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
         private void newPlaceTool_Click(object sender, EventArgs e)
         {
             if (organizerId != Guid.Empty)
@@ -161,7 +158,6 @@ namespace TicketsServise
                     "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
         private void ticketsWNTool_Click(object sender, EventArgs e)
         {
             if (organizerId == Guid.Empty)
@@ -176,7 +172,6 @@ namespace TicketsServise
                 newTickets.ShowDialog();
             }
         }
-
         private void ticketsWONTool_Click(object sender, EventArgs e)
         {
             if (organizerId == Guid.Empty)
@@ -191,7 +186,6 @@ namespace TicketsServise
                 newTickets.ShowDialog();
             }
         }
-
         private void buyBtn_Click(object sender, EventArgs e)
         {
             if (buyerId == Guid.Empty || eventId == Guid.Empty)
@@ -208,7 +202,10 @@ namespace TicketsServise
         }
         private void LoadEvents()
         {
-            _events.Clear();
+            if (_events != null)
+            {
+                _events.Clear();
+            }
             try
             {
                 var query = @"SELECT 
@@ -246,7 +243,59 @@ namespace TicketsServise
                 return;
             }
         }
-        private void LoadEvents(string city)
+        private void LoadEvents(string search)
+        {
+            cityComboBox.SelectedIndex = -1;
+            placeComboBox.SelectedIndex = -1;
+            typeComboBox.SelectedIndex = -1;
+            genreComboBox.SelectedIndex = -1;
+            placeComboBox.Enabled = false;
+            typeComboBox.Enabled = false;
+            genreComboBox.Enabled = false;
+            _events.Clear();
+            try
+            {
+                var query = @"SELECT 
+                            event_id, 
+                            event_name,
+                            performers,
+                            tickets_available,
+                            city,
+                            place,
+                            type,
+                            genre,
+                            date_display
+                            FROM event_info
+                            WHERE name = @search;";
+                var parameters = new NpgsqlParameter[]
+                {
+                    new NpgsqlParameter("@search", search)
+                };
+                DataTable dt = DatabaseHelper.ExecuteQuery(query);
+                foreach (DataRow row in dt.Rows)
+                {
+                    EventsInfo eventInfo = new EventsInfo(
+                        id: row.Field<Guid>("event_id"),
+                        name: row.Field<string>("event_name"),
+                        performers: row.Field<string>("performers"),
+                        ticketsAvailable: row.Field<long>("tickets_available"),
+                        city: row.Field<string>("city"),
+                        place: row.Field<string>("place"),
+                        type: row.Field<string>("type"),
+                        genre: row.Field<string>("genre"),
+                        dateTime: row.Field<string>("date_display")
+                    );
+                    _events.Add(eventInfo);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString(),
+                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+        }
+        private void LoadEventsFilter(string city)
         {
             _events.Clear();
             try
@@ -291,7 +340,7 @@ namespace TicketsServise
                 return;
             }
         }
-        private void LoadEvents(string city, string place)
+        private void LoadEventsFilter(string city, string place)
         {
             _events.Clear();
             try
@@ -338,7 +387,7 @@ namespace TicketsServise
                 return;
             }
         }
-        private void LoadEvents(string city, string place, string type)
+        private void LoadEventsFilter(string city, string place, string type)
         {
             _events.Clear();
             try
@@ -381,7 +430,7 @@ namespace TicketsServise
                 return;
             }
         }
-        private void LoadEvents(string city, string place, string type, string genre)
+        private void LoadEventsFilter(string city, string place, string type, string genre)
         {
             _events.Clear();
             try
@@ -439,7 +488,19 @@ namespace TicketsServise
                     DataTable dt = DatabaseHelper.ExecuteQuery(query);
                     foreach (DataRow row in dt.Rows)
                     {
-
+                        string? name = row.Field<string>("name");
+                        string? place = row.Field<string>("place");
+                        byte[]? pdf = row.Field<byte[]>("file");
+                        if (name == null || place == null || pdf == null)
+                        {
+                            MessageBox.Show("Пустой билет",
+                                "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            continue;
+                        }
+                        else
+                        {
+                            _tickets.Add(new TicketsInfo(name, place, pdf));
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -456,25 +517,169 @@ namespace TicketsServise
                 return;
             }
         }
-
         private void saveTicketBtn_Click(object sender, EventArgs e)
         {
+            if (ticketsList.SelectedItems.Count > 1)
+            {
+                MessageBox.Show("Выбрано несколько билетов для сохранения. " +
+                    "\nНеобходимо выбрать один.",
+                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            else if (ticketsList.SelectedItems.Count < 1)
+            {
+                MessageBox.Show("Не выбран билет для сохранения. " +
+                    "\nВыберите билет.",
+                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            else
+            {
+                TicketsInfo? t = (TicketsInfo?)ticketsList.SelectedItem;
+                if (t == null)
+                {
+                    MessageBox.Show("Информация о билете пуста.",
+                        "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                else
+                {
+                    using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+                    {
+                        saveFileDialog.Filter = "PDF-файлы (*.pdf)|*.pdf|Все файлы (*.*)|*.*";
+                        saveFileDialog.FilterIndex = 1;
+                        saveFileDialog.DefaultExt = "pdf";
+                        saveFileDialog.AddExtension = true;
+                        saveFileDialog.Title = "Сохранить билет";
+                        string fileName = $"{t.Name}_({t.Place})_{DateTime.Now.ToString()}.pdf";
+                        saveFileDialog.FileName = fileName;
 
+                        if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                        {
+                            try
+                            {
+                                File.WriteAllBytes(saveFileDialog.FileName, t.Pdf);
+                                if (File.Exists(fileName))
+                                {
+                                    DialogResult result = MessageBox.Show(
+                                        $"Билет успешно сохранен:\n{saveFileDialog.FileName}" +
+                                        $"\n\nОткрыть файл?",
+                                        "Успешно", 
+                                        MessageBoxButtons.YesNo, 
+                                        MessageBoxIcon.Question);
+
+                                    if (result == DialogResult.Yes)
+                                    {
+                                        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                                        {
+                                            FileName = saveFileDialog.FileName,
+                                            UseShellExecute = true
+                                        });
+                                    }
+                                }
+                            }
+                            catch (UnauthorizedAccessException)
+                            {
+                                MessageBox.Show("Нет прав для сохранения файла в выбранную папку.",
+                                    "Ошибка доступа", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                            catch (DirectoryNotFoundException)
+                            {
+                                MessageBox.Show("Указанная папка не найдена.",
+                                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                            catch (IOException ex)
+                            {
+                                MessageBox.Show($"Ошибка при записи файла: {ex.Message}",
+                                    "Ошибка ввода-вывода", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show(ex.Message.ToString(),
+                                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
+                    }
+                }
+            }
         }
-
         private void updateBtn_Click(object sender, EventArgs e)
         {
             LoadTickets();
         }
-
         private void filtersOkBtn_Click(object sender, EventArgs e)
         {
-
+            searchText.Clear();
+            if (string.IsNullOrEmpty(cityComboBox.Text))
+            {
+                MessageBox.Show("Не выбрано ни одного параметра фильтрации",
+                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                LoadEvents();
+            }
+            else if (string.IsNullOrEmpty(placeComboBox.Text))
+            {
+                LoadEventsFilter(cityComboBox.Text);
+            }
+            else if (string.IsNullOrEmpty(typeComboBox.Text))
+            {
+                LoadEventsFilter(cityComboBox.Text,
+                    placeComboBox.Text);
+            }
+            else if (string.IsNullOrEmpty(genreComboBox.Text))
+            {
+                LoadEventsFilter(cityComboBox.Text,
+                    placeComboBox.Text,
+                    typeComboBox.Text);
+            }
+            else
+            {
+                LoadEventsFilter(cityComboBox.Text,
+                    placeComboBox.Text,
+                    typeComboBox.Text,
+                    genreComboBox.Text);
+            }
         }
-
         private void searchBtn_Click(object sender, EventArgs e)
         {
-
+            if (string.IsNullOrEmpty(searchText.Text))
+            {
+                MessageBox.Show("Не введен запрос. Введите названее мероприятия для поиска в строку поиска.",
+                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                LoadEvents(searchText.Text);
+            }
+        }
+        private void cityComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cityComboBox.SelectedIndex != -1)
+            {
+                placeComboBox.Enabled = true;
+                typeComboBox.Enabled = false;
+                genreComboBox.Enabled = false;
+                placeComboBox.SelectedIndex = -1;
+                typeComboBox.SelectedIndex = -1;
+                genreComboBox.SelectedIndex = -1;
+            }
+        }
+        private void placeComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (placeComboBox.SelectedIndex != -1)
+            {
+                typeComboBox.Enabled = true;
+                genreComboBox.Enabled = false;
+                typeComboBox.SelectedIndex = -1;
+                genreComboBox.SelectedIndex = -1;
+            }
+        }
+        private void typeComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (typeComboBox.SelectedIndex != -1)
+            {
+                genreComboBox.Enabled= true;
+                genreComboBox.SelectedIndex = -1;
+            }
         }
     }
 }
