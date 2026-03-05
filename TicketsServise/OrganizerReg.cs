@@ -26,7 +26,7 @@ namespace TicketsServise
             };
             var queryResult = DatabaseHelper.ExecuteNonQuery(uniquePhoneQuery, phoneParameters);
             Regex regex = new Regex(@"^\+7 \(9\d{2}\) \d{3}-\d{2}-\d{2}$");
-            if (queryResult == 1 && regex.IsMatch(phoneTextBox.Text))
+            if (Convert.ToInt32(queryResult) == 1 && regex.IsMatch(phoneTextBox.Text))
             {
                 phoneTextBox.BackColor = Color.LightYellow;
                 // Номер в правильном формате, но повторяется - выделяется желтым
@@ -54,7 +54,7 @@ namespace TicketsServise
             };
             var queryResult = DatabaseHelper.ExecuteNonQuery(uniqueEmailQuery, emailParameters);
             Regex regex = new Regex(@"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$");
-            if (queryResult == 1 && regex.IsMatch(emailTextBox.Text))
+            if (Convert.ToInt32(queryResult) == 1 && regex.IsMatch(emailTextBox.Text))
             {
                 emailTextBox.BackColor = Color.LightYellow;
                 // Правильный формат, но повторяется - желтый
@@ -128,7 +128,7 @@ namespace TicketsServise
             };
             var queryResult = DatabaseHelper.ExecuteNonQuery(uniqueOgrnQuery, ogrnParameters);
             Regex regex = new Regex(@"^(\d{13}|\d{15})$");
-            if (queryResult == 1 && regex.IsMatch(ogrnTextBox.Text))
+            if (Convert.ToInt32(queryResult) == 1 && regex.IsMatch(ogrnTextBox.Text))
             {
                 ogrnTextBox.BackColor = Color.LightYellow;
                 /* Если ОГРН не уникален (по БД),
@@ -160,7 +160,7 @@ namespace TicketsServise
             };
             var queryResult = DatabaseHelper.ExecuteNonQuery(uniqueInnQuery, innParameters);
             Regex regex = new Regex(@"^(\d{12}|\d{10})$");
-            if (queryResult == 1 && regex.IsMatch(innTextBox.Text))
+            if (Convert.ToInt32(queryResult) == 1 && regex.IsMatch(innTextBox.Text))
             {
                 innTextBox.BackColor = Color.LightYellow;
                 /* Если ИНН не уникален (по БД),
@@ -190,9 +190,9 @@ namespace TicketsServise
             {
                 new NpgsqlParameter("@login", loginTextBox.Text),
             };
-            var queryResult = DatabaseHelper.ExecuteNonQuery(uniqueLoginQuery, loginParameters);
+            var queryResult = DatabaseHelper.ExecuteScalar(uniqueLoginQuery, loginParameters);
             Regex regex = new Regex(@"^[A-Za-z0-9!@#$%^&*()_\-+=]{8,20}$");
-            if (queryResult == 1 && regex.IsMatch(loginTextBox.Text))
+            if (Convert.ToInt32(queryResult) == 1 && regex.IsMatch(loginTextBox.Text))
             {
                 loginTextBox.BackColor = Color.LightYellow;
                 /* Если логин не уникален (по БД),
@@ -284,7 +284,7 @@ namespace TicketsServise
         }
         private void bankKppTextBox_TextChanged(object sender, EventArgs e)
         {
-            Regex regex = new Regex(@"^\d{10}$");
+            Regex regex = new Regex(@"^\d{9}$");
             if (regex.IsMatch(bankKppTextBox.Text))
             {
                 bankKppTextBox.BackColor = Color.LightGreen;
@@ -298,9 +298,9 @@ namespace TicketsServise
         {
             this.Close();
         }
-        private void okBtn_Click(Object sender, EventArgs e)
+        private void okBtn_Click(object sender, EventArgs e)
         {
-            string login = loginTextBox.Text; if (passwordTextBox.Text == password2TextBox.Text) ;
+            string login = loginTextBox.Text;
             string password;
             if (passwordTextBox.Text == password2TextBox.Text)
             {
@@ -322,7 +322,7 @@ namespace TicketsServise
             string bankKpp = bankKppTextBox.Text;
             string bankInn = bankInnTextBox.Text;
             string orgCorrAccount = orgCorrAccountTextBox.Text;
-            string openningDate = accountDateTime.Value.ToString("yyyy-MM-DD");
+            string openningDate = accountDateTime.Value.ToString("yyyy-MM-dd");
             if (string.IsNullOrEmpty(login) ||
                 string.IsNullOrEmpty(password) ||
                 string.IsNullOrEmpty(email) ||
@@ -344,19 +344,20 @@ namespace TicketsServise
             try
             {
                 var query = @"SELECT organizer_reg(
-                            @new_login, 
-                            @new_password,
-                            @new_email,
-                            @new_phone,
-                            @new_name,
-                            @new_ogrn,
-                            @new_inn,
-                            @new_bank_name,
-                            @new_bank_bik,
-                            @new_bank_corr_account,
-                            @new_bank_inn,
-                            @new_corr_account,
-                            @new_openning_date);";
+                            @new_login::varchar, 
+                            @new_password::varchar,
+                            @new_email::varchar,
+                            @new_phone::char(18),
+                            @new_name::varchar,
+                            @new_ogrn::varchar,
+                            @new_inn::varchar,
+                            @new_bank_name::varchar,
+                            @new_bank_bik::char(9),
+                            @new_bank_kpp::char(9),
+                            @new_bank_corr_account::char(20),
+                            @new_bank_inn::varchar,
+                            @new_corr_account::char(20),
+                            @new_openning_date::date);";
                 var parameters = new NpgsqlParameter[]
                 {
                     new NpgsqlParameter("@new_login", login),
@@ -368,6 +369,7 @@ namespace TicketsServise
                     new NpgsqlParameter("@new_inn", inn),
                     new NpgsqlParameter("@new_bank_name", bankName),
                     new NpgsqlParameter("@new_bank_bik", bankBik),
+                    new NpgsqlParameter("@new_bank_kpp", bankKpp),
                     new NpgsqlParameter("@new_bank_corr_account", bankCorrAccount),
                     new NpgsqlParameter("@new_bank_inn", bankInn),
                     new NpgsqlParameter("@new_corr_account", orgCorrAccount),
@@ -376,16 +378,23 @@ namespace TicketsServise
                 var res = DatabaseHelper.ExecuteScalar(query, parameters);
                 if (res != null && res != DBNull.Value)
                 {
-                    if (Guid.TryParse(res.ToString(), out Guid parsedGuid))
+                    if (res is Guid guid)
                     {
-                        organizerId = parsedGuid;
-                        RegEnd?.Invoke(organizerId);
-                        this.Close();
+                        organizerId = guid;
                     }
                     else
                     {
-                        MessageBox.Show("Некорректный формат GUID.", "Ошибка",
-                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        string strResult = res.ToString();
+                        if (Guid.TryParse(strResult, out Guid parsedGuid))
+                        {
+                            organizerId = parsedGuid;
+                        }
+                        else
+                        {
+                            MessageBox.Show($"Ошибка: функция вернула '{strResult}', ожидался GUID.",
+                                "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
                     }
                 }
             }

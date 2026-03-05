@@ -73,6 +73,7 @@
             okBtn.TabIndex = 19;
             okBtn.Text = "ОК";
             okBtn.UseVisualStyleBackColor = true;
+            okBtn.Click += okBtn_Click;
             // 
             // cancelBtn
             // 
@@ -281,6 +282,7 @@
             bankNameComboBox.Name = "bankNameComboBox";
             bankNameComboBox.Size = new Size(431, 28);
             bankNameComboBox.TabIndex = 38;
+            bankNameComboBox.SelectedIndexChanged += bankNameComboBox_SelectedIndexChanged;
             bankNameComboBox.TextChanged += nameTextBox_TextChanged;
             // 
             // label8

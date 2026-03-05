@@ -22,7 +22,7 @@ namespace TicketsServise
             };
             var queryResult = DatabaseHelper.ExecuteNonQuery(uniquePhoneQuery, phoneParameters);
             Regex regex = new Regex(@"^\+7 \(9\d{2}\) \d{3}-\d{2}-\d{2}$");
-            if (queryResult == 1 && regex.IsMatch(phoneTextBox.Text))
+            if (Convert.ToInt32(queryResult) == 1 && regex.IsMatch(phoneTextBox.Text))
             {
                 phoneTextBox.BackColor = Color.LightYellow;
             }

@@ -63,7 +63,7 @@ namespace TicketsServise
                     }
 
                     connection.Open();
-                    return command.ExecuteScalar;
+                    return command.ExecuteScalar();
                 }
             }
             catch (Exception ex)
@@ -76,21 +76,21 @@ namespace TicketsServise
         {
             try
             {
-                using (var connecation = new NpgsqlConnection(connectionString))
-                using (var command = new NpgsqlCommand(query, connecation))
+                using (var connection = new NpgsqlConnection(connectionString))
+                using (var command = new NpgsqlCommand(query, connection))
                 {
                     if (parameters != null)
                     {
                         command.Parameters.AddRange(parameters);
                     }
 
-                    connecation.Open();
+                    connection.Open();
                     return command.ExecuteNonQuery();
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Ошибка выполнения запроса: " + ex.Message);
+                MessageBox.Show("Ошибка выполнения запроса: " + ex.Message);
                 return -1;
             }
         }
