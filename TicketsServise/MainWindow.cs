@@ -24,11 +24,11 @@ namespace TicketsServise
         private void buyerRegTool_Click(object sender, EventArgs e)
         {
             BuyerReg buyerReg = new BuyerReg();
-            buyerReg.ShowDialog();
             buyerReg.RegEnd += (id) =>
-            {
-                BuyerToolsLoad(id);
-            };
+                {
+                    BuyerToolsLoad(id);
+                };
+            buyerReg.ShowDialog();
         }
         private void organizerRegTool_Click(object sender, EventArgs e)
         {
@@ -81,7 +81,6 @@ namespace TicketsServise
         private void loginTool_Click(object sender, EventArgs e)
         {
             Login login = new Login();
-            login.ShowDialog();
             login.AccountType += (type) =>
             {
                 if (type == 1)
@@ -99,33 +98,34 @@ namespace TicketsServise
                     };
                 }
             };
+            login.ShowDialog();
         }
         private void OrganizerToolsLoad(Guid newId)
         {
             buyerId = Guid.Empty;
             organizerId = newId;
-            logoutTool.Available = true;
+            logoutTool.Enabled = true;
             organizerMenu.Visible = true;
-            organizerMenu.Available = true;
+            organizerMenu.Enabled = true;
             loginTool.Visible = false;
-            loginTool.Available = false;
+            loginTool.Enabled = false;
             buyerRegTool.Visible = false;
-            buyerRegTool.Available = false;
+            buyerRegTool.Enabled = false;
             organizerRegTool.Visible = false;
-            organizerRegTool.Available = false;
+            organizerRegTool.Enabled = false;
         }
         private void BuyerToolsLoad(Guid newId)
         {
             organizerId = Guid.Empty;
             buyerId = newId;
-            logoutTool.Available = true;
+            logoutTool.Enabled = true;
             buyBtn.Enabled = true;
             loginTool.Visible = false;
-            loginTool.Available = false;
+            loginTool.Enabled = false;
             buyerRegTool.Visible = false;
-            buyerRegTool.Available = false;
+            buyerRegTool.Enabled = false;
             organizerRegTool.Visible = false;
-            organizerRegTool.Available = false;
+            organizerRegTool.Enabled = false;
         }
         private void aboutTool_Click(object sender, EventArgs e)
         {

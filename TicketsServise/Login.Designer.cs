@@ -84,7 +84,6 @@
             okBtn.TabIndex = 3;
             okBtn.Text = "OK";
             okBtn.UseVisualStyleBackColor = true;
-            okBtn.TextChanged += okBtn_Click;
             okBtn.Click += okBtn_Click;
             // 
             // cancelBtn
@@ -96,7 +95,6 @@
             cancelBtn.TabIndex = 3;
             cancelBtn.Text = "Отмена";
             cancelBtn.UseVisualStyleBackColor = true;
-            cancelBtn.TextChanged += cancelBtn_Click;
             cancelBtn.Click += cancelBtn_Click;
             // 
             // Login
