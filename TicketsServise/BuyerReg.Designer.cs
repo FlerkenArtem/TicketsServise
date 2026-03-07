@@ -208,7 +208,7 @@
             loginTextBox.Name = "loginTextBox";
             loginTextBox.Size = new Size(458, 27);
             loginTextBox.TabIndex = 14;
-            loginTextBox.TextChanged += passwordTextBox_TextChanged;
+            loginTextBox.TextChanged += loginTextBox_TextChanged;
             // 
             // phoneTextBox
             // 
@@ -218,7 +218,7 @@
             phoneTextBox.Name = "phoneTextBox";
             phoneTextBox.Size = new Size(458, 27);
             phoneTextBox.TabIndex = 16;
-            phoneTextBox.TextChanged += passwordTextBox_TextChanged;
+            phoneTextBox.TextChanged += phoneTextBox_TextChanged;
             // 
             // BuyerReg
             // 

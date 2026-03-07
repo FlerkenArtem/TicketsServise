@@ -11,7 +11,7 @@ namespace TicketsServise
         }
         public event Action<Guid> RegEnd;
         Guid buyerId;
-        private void phoneTextBox_TextChanged(object sender, EventArgs e)
+        private void phoneTextBox_TextChanged(object sender, EventArgs e) // проверка правильности и уникальности номера телефона
         {
             var uniquePhoneQuery = @"SELECT 1 
                                     FROM account 
@@ -20,7 +20,7 @@ namespace TicketsServise
             {
                 new NpgsqlParameter("@phone", phoneTextBox.Text),
             };
-            var queryResult = DatabaseHelper.ExecuteNonQuery(uniquePhoneQuery, phoneParameters);
+            var queryResult = DatabaseHelper.ExecuteScalar(uniquePhoneQuery, phoneParameters);
             Regex regex = new Regex(@"^\+7 \(9\d{2}\) \d{3}-\d{2}-\d{2}$");
             if (Convert.ToInt32(queryResult) == 1 && regex.IsMatch(phoneTextBox.Text))
             {
@@ -35,7 +35,7 @@ namespace TicketsServise
                 phoneTextBox.BackColor = Color.DarkRed;
             }
         }
-        private void emailTextBox_TextChanged(object sender, EventArgs e)
+        private void emailTextBox_TextChanged(object sender, EventArgs e) // проверка правильности и уникальности email
         {
             var uniqueEmailQuery = @"SELECT 1 
                                     FROM account 
@@ -44,9 +44,9 @@ namespace TicketsServise
             {
                 new NpgsqlParameter("@email", emailTextBox.Text),
             };
-            var queryResult = DatabaseHelper.ExecuteNonQuery(uniqueEmailQuery, emailParameters);
+            var queryResult = DatabaseHelper.ExecuteScalar(uniqueEmailQuery, emailParameters);
             Regex regex = new Regex(@"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$");
-            if (queryResult == 1 && regex.IsMatch(emailTextBox.Text))
+            if (Convert.ToInt32(queryResult) == 1 && regex.IsMatch(emailTextBox.Text))
             {
                 emailTextBox.BackColor = Color.LightYellow;
             }
@@ -59,7 +59,7 @@ namespace TicketsServise
                 emailTextBox.BackColor = Color.DarkRed;
             }
         }
-        private void passwordTextBox_TextChanged(object sender, EventArgs e)
+        private void passwordTextBox_TextChanged(object sender, EventArgs e) // проверка правильности и совпвдения паролей
         {
             if (passwordTextBox.TextLength >= 8 && (passwordTextBox.Text == password2TextBox.Text || password2TextBox.TextLength == 0))
             {
@@ -70,7 +70,7 @@ namespace TicketsServise
                 passwordTextBox.BackColor = Color.DarkRed;
             }
         }
-        private void password2TextBox_TextChanged(object sender, EventArgs e)
+        private void password2TextBox_TextChanged(object sender, EventArgs e) // проверка правильности и совпвдения паролей
         {
             if (password2TextBox.TextLength >= 8 && password2TextBox.Text == passwordTextBox.Text)
             {
@@ -81,7 +81,7 @@ namespace TicketsServise
                 password2TextBox.BackColor = Color.DarkRed;
             }
         }
-        private void surnameTextBox_TextChanged(object sender, EventArgs e)
+        private void surnameTextBox_TextChanged(object sender, EventArgs e) // проверка правильности Фамилии
         {
             Regex regex = new Regex(@"^[А-Яа-яЁё]+([-][А-Яа-яЁё]+)*$");
             if (regex.IsMatch(surnameTextBox.Text) && surnameTextBox.TextLength >= 2 && char.IsUpper(surnameTextBox.Text[0]))
@@ -93,7 +93,7 @@ namespace TicketsServise
                 surnameTextBox.BackColor = Color.DarkRed;
             }
         }
-        private void nameTextBox_TextChanged(object sender, EventArgs e)
+        private void nameTextBox_TextChanged(object sender, EventArgs e) // проверка правильности имени
         {
             Regex regex = new Regex(@"^[А-Яа-яЁё]+$");
             if (regex.IsMatch(nameTextBox.Text) && nameTextBox.TextLength >= 2 && char.IsUpper(nameTextBox.Text[0]))
@@ -105,7 +105,7 @@ namespace TicketsServise
                 nameTextBox.BackColor = Color.DarkRed;
             }
         }
-        private void patronymicTextBox_TextChanged(object sender, EventArgs e)
+        private void patronymicTextBox_TextChanged(object sender, EventArgs e) // проверка правильности отчества
         {
             Regex regex = new Regex(@"^$|^[А-Яа-яЁё]+$");
             if ((regex.IsMatch(patronymicTextBox.Text) && patronymicTextBox.TextLength >= 2 && char.IsUpper(patronymicTextBox.Text[0]) ||
@@ -118,7 +118,7 @@ namespace TicketsServise
                 patronymicTextBox.BackColor = Color.DarkRed;
             }
         }
-        private void loginTextBox_TextChanged(object sender, EventArgs e)
+        private void loginTextBox_TextChanged(object sender, EventArgs e) // проверка правильности и уникальности логина
         {
             var uniqueLoginQuery = @"SELECT 1 
                                     FROM account 
@@ -127,9 +127,9 @@ namespace TicketsServise
             {
                 new NpgsqlParameter("@login", loginTextBox.Text),
             };
-            var queryResult = DatabaseHelper.ExecuteNonQuery(uniqueLoginQuery, loginParameters);
+            var queryResult = DatabaseHelper.ExecuteScalar(uniqueLoginQuery, loginParameters);
             Regex regex = new Regex(@"^[A-Za-z0-9!@#$%^&*()_\-+=]{8,20}$");
-            if (queryResult == 1 && regex.IsMatch(loginTextBox.Text))
+            if (Convert.ToInt32(queryResult) == 1 && regex.IsMatch(loginTextBox.Text))
             {
                 loginTextBox.BackColor = Color.LightYellow;
             }
@@ -142,7 +142,7 @@ namespace TicketsServise
                 loginTextBox.BackColor = Color.DarkRed;
             }
         }
-        private void okBtn_Click(object sender, EventArgs e)
+        private void okBtn_Click(object sender, EventArgs e) // Обработка события нажатия ОК, завершение регистрации
         {
             string login = loginTextBox.Text;
             string password;
@@ -177,7 +177,14 @@ namespace TicketsServise
 
             try
             {
-                var buyerRegQuery = @"SELECT buyer_reg(@new_login, @new_password, @new_email, @new_phone, @new_surname, @new_name, @new_patronymic);";
+                var buyerRegQuery = @"SELECT buyer_reg(
+                                    @new_login::varchar, 
+                                    @new_password::varchar, 
+                                    @new_email::varchar, 
+                                    @new_phone::varchar, 
+                                    @new_surname::varchar, 
+                                    @new_name::varchar, 
+                                    @new_patronymic::varchar);";
                 var buyerRegParameters = new NpgsqlParameter[]
                 {
                     new NpgsqlParameter("@new_login", login),
@@ -191,16 +198,25 @@ namespace TicketsServise
                 var buyerResult = DatabaseHelper.ExecuteScalar(buyerRegQuery, buyerRegParameters);
                 if (buyerResult != null && buyerResult != DBNull.Value)
                 {
-                    if (Guid.TryParse(buyerResult.ToString(), out Guid parsedGuid))
+                    if (buyerId is Guid guid)
                     {
-                        buyerId = parsedGuid;
-                        RegEnd?.Invoke(buyerId);
-                        this.Close();
+                        buyerId = guid;
                     }
                     else
                     {
-                        MessageBox.Show("Некорректный формат GUID.", "Ошибка",
-                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        string strRes = buyerResult.ToString();
+                        if (Guid.TryParse(strRes, out Guid parsedGuid))
+                        {
+                            buyerId = parsedGuid;
+                            RegEnd.Invoke(buyerId);
+                            this.Close();
+                        }
+                        else
+                        {
+                            MessageBox.Show($"Ошибка: функция вернула '{strRes}', ожидался GUID.",
+                                "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
                     }
                 }
             }
@@ -210,7 +226,7 @@ namespace TicketsServise
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private void cancelBtn_Click(object sender, EventArgs e)
+        private void cancelBtn_Click(object sender, EventArgs e) // Отмена - закрытие окна
         {
             Close();
         }

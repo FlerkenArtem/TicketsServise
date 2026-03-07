@@ -294,6 +294,30 @@ namespace TicketsServise
                 bankKppTextBox.BackColor = Color.DarkRed;
             }
         }
+        private void bankCorrAccountTextBox_TextChanged(object sender, EventArgs e)
+        {
+            Regex regex = new Regex(@"^301\d{17}$");
+            if (regex.IsMatch(bankCorrAccountTextBox.Text))
+            {
+                bankCorrAccountTextBox.BackColor = Color.LightGreen;
+            }
+            else
+            {
+                bankCorrAccountTextBox.BackColor = Color.DarkRed;
+            }
+        }
+        private void orgCorrAccountTextBox_TextChanged(object sender, EventArgs e)
+        {
+            Regex regex = new Regex(@"^40\d{18}$");
+            if (regex.IsMatch(orgCorrAccountTextBox.Text))
+            {
+                orgCorrAccountTextBox.BackColor = Color.LightGreen; // Корректно
+            }
+            else
+            {
+                orgCorrAccountTextBox.BackColor = Color.DarkRed;   // Ошибка
+            }
+        }
         private void cancelBtn_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -381,20 +405,14 @@ namespace TicketsServise
                     if (res is Guid guid)
                     {
                         organizerId = guid;
+                        RegEnd.Invoke(organizerId);
+                        this.Close();
                     }
                     else
                     {
-                        string strResult = res.ToString();
-                        if (Guid.TryParse(strResult, out Guid parsedGuid))
-                        {
-                            organizerId = parsedGuid;
-                        }
-                        else
-                        {
-                            MessageBox.Show($"Ошибка: функция вернула '{strResult}', ожидался GUID.",
-                                "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return;
-                        }
+                        MessageBox.Show($"Ошибка: функция вернула '{res.ToString()}', ожидался GUID.",
+                            "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
                     }
                 }
             }

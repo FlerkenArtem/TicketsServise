@@ -180,6 +180,7 @@
             orgCorrAccountTextBox.Name = "orgCorrAccountTextBox";
             orgCorrAccountTextBox.Size = new Size(431, 27);
             orgCorrAccountTextBox.TabIndex = 49;
+            orgCorrAccountTextBox.TextChanged += orgCorrAccountTextBox_TextChanged;
             // 
             // bankCorrAccountTextBox
             // 
@@ -189,6 +190,7 @@
             bankCorrAccountTextBox.Name = "bankCorrAccountTextBox";
             bankCorrAccountTextBox.Size = new Size(431, 27);
             bankCorrAccountTextBox.TabIndex = 48;
+            bankCorrAccountTextBox.TextChanged += bankCorrAccountTextBox_TextChanged;
             // 
             // bankInnTextBox
             // 
