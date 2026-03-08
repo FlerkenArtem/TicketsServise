@@ -34,6 +34,7 @@
             cancelBtn = new Button();
             addressGroupBox = new GroupBox();
             panel1 = new Panel();
+            indexTextBox = new MaskedTextBox();
             flatComboBox = new ComboBox();
             houseComboBox = new ComboBox();
             streetComboBox = new ComboBox();
@@ -49,7 +50,6 @@
             label4 = new Label();
             label3 = new Label();
             label2 = new Label();
-            indexTextBox = new MaskedTextBox();
             addressGroupBox.SuspendLayout();
             panel1.SuspendLayout();
             SuspendLayout();
@@ -78,6 +78,7 @@
             okBtn.TabIndex = 2;
             okBtn.Text = "OK";
             okBtn.UseVisualStyleBackColor = true;
+            okBtn.Click += okBtn_Click;
             // 
             // cancelBtn
             // 
@@ -87,6 +88,7 @@
             cancelBtn.TabIndex = 3;
             cancelBtn.Text = "Отмена";
             cancelBtn.UseVisualStyleBackColor = true;
+            cancelBtn.Click += cancelBtn_Click;
             // 
             // addressGroupBox
             // 
@@ -122,6 +124,15 @@
             panel1.Size = new Size(446, 309);
             panel1.TabIndex = 0;
             // 
+            // indexTextBox
+            // 
+            indexTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            indexTextBox.Location = new Point(3, 401);
+            indexTextBox.Mask = "000000";
+            indexTextBox.Name = "indexTextBox";
+            indexTextBox.Size = new Size(411, 27);
+            indexTextBox.TabIndex = 19;
+            // 
             // flatComboBox
             // 
             flatComboBox.FormattingEnabled = true;
@@ -129,6 +140,7 @@
             flatComboBox.Name = "flatComboBox";
             flatComboBox.Size = new Size(411, 28);
             flatComboBox.TabIndex = 11;
+            flatComboBox.TextChanged += flatComboBox_TextChanged;
             // 
             // houseComboBox
             // 
@@ -137,6 +149,7 @@
             houseComboBox.Name = "houseComboBox";
             houseComboBox.Size = new Size(411, 28);
             houseComboBox.TabIndex = 12;
+            houseComboBox.TextChanged += houseComboBox_TextChanged;
             // 
             // streetComboBox
             // 
@@ -145,6 +158,7 @@
             streetComboBox.Name = "streetComboBox";
             streetComboBox.Size = new Size(411, 28);
             streetComboBox.TabIndex = 13;
+            streetComboBox.TextChanged += streetComboBox_TextChanged;
             // 
             // areaComboBox
             // 
@@ -153,6 +167,7 @@
             areaComboBox.Name = "areaComboBox";
             areaComboBox.Size = new Size(411, 28);
             areaComboBox.TabIndex = 14;
+            areaComboBox.TextChanged += areaComboBox_TextChanged;
             // 
             // cityComboBox
             // 
@@ -161,6 +176,7 @@
             cityComboBox.Name = "cityComboBox";
             cityComboBox.Size = new Size(411, 28);
             cityComboBox.TabIndex = 15;
+            cityComboBox.TextChanged += cityComboBox_TextChanged;
             // 
             // districtComboBox
             // 
@@ -169,6 +185,7 @@
             districtComboBox.Name = "districtComboBox";
             districtComboBox.Size = new Size(411, 28);
             districtComboBox.TabIndex = 16;
+            districtComboBox.TextChanged += districtComboBox_TextChanged;
             // 
             // regionComboBox
             // 
@@ -177,6 +194,7 @@
             regionComboBox.Name = "regionComboBox";
             regionComboBox.Size = new Size(411, 28);
             regionComboBox.TabIndex = 17;
+            regionComboBox.TextChanged += regionComboBox_TextChanged;
             // 
             // label9
             // 
@@ -249,15 +267,6 @@
             label2.Size = new Size(58, 20);
             label2.TabIndex = 10;
             label2.Text = "Регион";
-            // 
-            // indexTextBox
-            // 
-            indexTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            indexTextBox.Location = new Point(3, 401);
-            indexTextBox.Mask = "000000";
-            indexTextBox.Name = "indexTextBox";
-            indexTextBox.Size = new Size(411, 27);
-            indexTextBox.TabIndex = 19;
             // 
             // NewPlace
             // 

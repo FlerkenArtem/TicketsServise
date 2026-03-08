@@ -6,13 +6,13 @@ namespace TicketsServise
 {
     public partial class NewPlace : Form
     {
-        private List<string> _regions;
-        private List<string> _districts;
-        private List<string> _cities;
-        private List<string> _areas;
-        private List<string> _streets;
-        private List<string> _houses;
-        private List<string> _flats;
+        private List<string> _regions = new List<string>();
+        private List<string> _districts = new List<string>();
+        private List<string> _cities = new List<string>();
+        private List<string> _areas = new List<string>();
+        private List<string> _streets = new List<string>();
+        private List<string> _houses = new List<string>();
+        private List<string> _flats = new List<string>();
         public NewPlace()
         {
             InitializeComponent();
@@ -24,7 +24,7 @@ namespace TicketsServise
             LoadHouses();
             LoadFlats();
         }
-        private void LoadRegions()
+        private void LoadRegions() // Загрузка регионов
         {
             regionComboBox.Items.Clear();
             try
@@ -45,7 +45,7 @@ namespace TicketsServise
                     "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private void LoadDistricts()
+        private void LoadDistricts() // Загрузка муниципальных районов
         {
             districtComboBox.Items.Clear();
             try
@@ -66,7 +66,7 @@ namespace TicketsServise
                     "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private void LoadCities()
+        private void LoadCities() // Загрузка городов
         {
             cityComboBox.Items.Clear();
             try
@@ -87,7 +87,7 @@ namespace TicketsServise
                     "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private void LoadAreas()
+        private void LoadAreas() // Загрузка внутригородовых районов
         {
             areaComboBox.Items.Clear();
             try
@@ -108,7 +108,7 @@ namespace TicketsServise
                     "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private void LoadStreets()
+        private void LoadStreets() // Загрузка улиц
         {
             streetComboBox.Items.Clear();
             try
@@ -129,7 +129,7 @@ namespace TicketsServise
                     "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private void LoadHouses()
+        private void LoadHouses() // Загрузка домов
         {
             houseComboBox.Items.Clear();
             try
@@ -150,7 +150,7 @@ namespace TicketsServise
                     "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private void LoadFlats()
+        private void LoadFlats() // Загрузка квартир
         {
             flatComboBox.Items.Clear();
             try
@@ -171,7 +171,7 @@ namespace TicketsServise
                     "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private void regionComboBox_TextChanged(object sender, EventArgs e)
+        private void regionComboBox_TextChanged(object sender, EventArgs e) // Проверка правильности заполнения регионов
         {
             Regex regex = new Regex("^[А-ЯЁ][а-яё]*(?:[-\\s][А-Яа-яё]+)*$");
             if (regex.IsMatch(regionComboBox.Text))
@@ -183,10 +183,10 @@ namespace TicketsServise
                 regionComboBox.BackColor = Color.DarkRed;
             }
         }
-        private void districtComboBox_TextChanged(object sender, EventArgs e)
+        private void districtComboBox_TextChanged(object sender, EventArgs e) // Проверка правильности заполнения муниципальных районов
         {
             Regex regex = new Regex("^[А-ЯЁ][а-яё]*(?:[-\\s][А-Яа-яё]+)*$");
-            if (regex.IsMatch(districtComboBox.Text))
+            if (regex.IsMatch(districtComboBox.Text) || districtComboBox.Text.Length == 0)
             {
                 districtComboBox.BackColor = Color.LightGreen;
             }
@@ -195,7 +195,7 @@ namespace TicketsServise
                 districtComboBox.BackColor = Color.DarkRed;
             }
         }
-        private void cityComboBox_TextChanged(object sender, EventArgs e)
+        private void cityComboBox_TextChanged(object sender, EventArgs e) // Проверка правильности заполнения городов
         {
             Regex regex = new Regex("^[А-ЯЁ][а-яё]*(?:[-\\s][А-Яа-яё]+)*$");
             if (regex.IsMatch(cityComboBox.Text))
@@ -207,10 +207,10 @@ namespace TicketsServise
                 cityComboBox.BackColor = Color.DarkRed;
             }
         }
-        private void areaComboBox_TextChanged(object sender, EventArgs e)
+        private void areaComboBox_TextChanged(object sender, EventArgs e) // Проверка правильности заполнения внутригородовых районов
         {
             Regex regex = new Regex("^[А-ЯЁ][а-яё]*(?:[-\\s][А-Яа-яё]+)*$");
-            if (regex.IsMatch(areaComboBox.Text))
+            if (regex.IsMatch(areaComboBox.Text) || areaComboBox.Text.Length == 0)
             {
                 areaComboBox.BackColor = Color.LightGreen;
             }
@@ -219,7 +219,7 @@ namespace TicketsServise
                 areaComboBox.BackColor = Color.DarkRed;
             }
         }
-        private void streetComboBox_TextChanged(object sender, EventArgs e)
+        private void streetComboBox_TextChanged(object sender, EventArgs e) // Проверка правильности заполнения улиц
         {
             Regex regex = new Regex("^[А-ЯЁ][а-яё]*(?:[-\\s][А-Яа-яё]+)*$");
             if (regex.IsMatch(streetComboBox.Text))
@@ -231,7 +231,7 @@ namespace TicketsServise
                 streetComboBox.BackColor = Color.DarkRed;
             }
         }
-        private void houseComboBox_TextChanged(object sender, EventArgs e)
+        private void houseComboBox_TextChanged(object sender, EventArgs e) // Проверка правильности заполнения домов
         {
             Regex regex = new Regex("^\\d+[А-ЯЁа-яё\\d\\-/]*(?:\\s+(?:корпус|к\\.|литера|лит\\.|строение|стр\\.|владение|влад\\.|сооружение|соор\\.|дом|д\\.)\\s*[А-ЯЁа-яё\\d]+|\\s+[А-ЯЁа-яё])*$");
             if (regex.IsMatch(houseComboBox.Text))
@@ -243,10 +243,10 @@ namespace TicketsServise
                 houseComboBox.BackColor = Color.DarkRed;
             }
         }
-        private void flatComboBox_TextChanged(object sender, EventArgs e)
+        private void flatComboBox_TextChanged(object sender, EventArgs e) // Проверка правильности заполнения квартир
         {
             Regex regex = new Regex("^\\d{1,4}[А-ЯЁа-яё]?$");
-            if (regex.IsMatch(flatComboBox.Text))
+            if (regex.IsMatch(flatComboBox.Text) || flatComboBox.Text.Length == 0)
             {
                 flatComboBox.BackColor = Color.LightGreen;
             }
@@ -255,7 +255,7 @@ namespace TicketsServise
                 flatComboBox.BackColor = Color.DarkRed;
             }
         }
-        private void okBtn_Click(object sender, EventArgs e)
+        private void okBtn_Click(object sender, EventArgs e) // Запрос к БД по нажатию кнопки ОК
         {
             string name = nameTextBox.Text;
             string region = regionComboBox.Text;
@@ -279,7 +279,16 @@ namespace TicketsServise
             }
             try
             {
-                var query = "CALL new_place(@name, @region, @district, @city, @area, @street, @house, @flat, @index);";
+                var query = @"CALL new_place(
+                            @name::varchar, 
+                            @region::varchar, 
+                            @district::varchar, 
+                            @city::varchar, 
+                            @area::varchar, 
+                            @street::varchar, 
+                            @house::varchar, 
+                            @flat::varchar, 
+                            @index::varchar);";
                 var parameters = new NpgsqlParameter[]
                 {
                     new NpgsqlParameter("@name", name),
@@ -301,7 +310,7 @@ namespace TicketsServise
                         "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private void cancelBtn_Click(Object sender, EventArgs e)
+        private void cancelBtn_Click(Object sender, EventArgs e) // Закрытие окна по нажатию кнопки Отмена
         {
             this.Close();
         }
