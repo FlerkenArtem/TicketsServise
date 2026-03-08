@@ -16,17 +16,16 @@ namespace TicketsServise
         public NewEvent(Guid id)
         {
             this.organizerId = id;
+            InitializeComponent();
             _performersSrc.DataSource = _performers.Keys.ToList();
             performersListBox.DataSource = _performersSrc;
-            InitializeComponent();
             LoadPlaces();
             LoadTypes();
             LoadGenres();
         }
-        private void dateTimeTextBox_TextChanged(object sender, EventArgs e)
+        private void dateTimeTextBox_TextChanged(object sender, EventArgs e) // Прорверка Формата даты и времени
         {
-            Regex regex = new Regex("^(?:(?:(?:0[1-9]|1[0-9]|2[0-8])/(?:0[1-9]|1[0-2])|(?:29|30)/(?:0[13-9]|1[0-2])|31/(?:0[13578]|1[02]))/(?:[0-9]{4})|29/02/(?:(?:[0-9]{2}(?:0[48]|[2468][048]|[13579][26]))|(?:[02468][048]|[13579][26])00)) (0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$");
-            if (regex.IsMatch(dateTimeTextBox.Text))
+            Regex regex = new Regex(@"^(?:(?:(?:0[1-9]|1[0-9]|2[0-8])[./](?:0[1-9]|1[0-2])|(?:29|30)[./](?:0[13-9]|1[0-2])|31[./](?:0[13578]|1[02]))[./](?:[0-9]{4})|29[./]02[./](?:(?:[0-9]{2}(?:0[48]|[2468][048]|[13579][26]))|(?:[02468][048]|[13579][26])00)) (0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"); if (regex.IsMatch(dateTimeTextBox.Text))
             {
                 if (DateTime.TryParse(dateTimeTextBox.Text, out DateTime dateTime))
                 {
@@ -50,23 +49,30 @@ namespace TicketsServise
                 dateTimeTextBox.BackColor = Color.DarkRed;
             }
         }
-        private void LoadPlaces()
+        private void LoadPlaces() // Загрузка площадок
         {
             try
             {
+                _places.Clear();
                 var query = "SELECT id, name FROM place";
                 DataTable placesData = DatabaseHelper.ExecuteQuery(query);
+
+                if (placesData.Rows.Count == 0)
+                {
+                    MessageBox.Show("В базе данных нет ни одной площадки.\nСначала создайте площадку через меню организатора.",
+                        "Нет данных", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
                 foreach (DataRow row in placesData.Rows)
                 {
-                    Guid id = row.Field<Guid>("id");
-                    string name = row.Field<string>("name");
-                    _places.Add(id, name);
+                    _places.Add(row.Field<Guid>("id"), row.Field<string>("name"));
                 }
-                placeComboBox.SelectedIndex = -1;
-                placeComboBox.DataSource = _places;
+
+                placeComboBox.DataSource = _places.ToList();
                 placeComboBox.DisplayMember = "Value";
                 placeComboBox.ValueMember = "Key";
-
+                placeComboBox.SelectedIndex = -1;
             }
             catch (Exception ex)
             {
@@ -74,22 +80,30 @@ namespace TicketsServise
                     "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private void LoadTypes()
+        private void LoadTypes() // Загрузить типы мероприятий
         {
             try
             {
+                _types.Clear();
                 var query = "SELECT id, type FROM event_type";
                 DataTable typesData = DatabaseHelper.ExecuteQuery(query);
+
+                if (typesData.Rows.Count == 0)
+                {
+                    MessageBox.Show("В базе данных нет типов мероприятий.\nОбратитесь к администратору.",
+                        "Нет данных", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
                 foreach (DataRow row in typesData.Rows)
                 {
-                    Guid id = row.Field<Guid>("id");
-                    string type = row.Field<string>("type");
-                    _types.Add(id, type);
+                    _types.Add(row.Field<Guid>("id"), row.Field<string>("type"));
                 }
-                typeComboBox.SelectedIndex = -1;
-                typeComboBox.DataSource = _types;
+
+                typeComboBox.DataSource = _types.ToList();
                 typeComboBox.DisplayMember = "Value";
                 typeComboBox.ValueMember = "Key";
+                typeComboBox.SelectedIndex = -1;
             }
             catch (Exception ex)
             {
@@ -97,22 +111,30 @@ namespace TicketsServise
                     "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private void LoadGenres()
+        private void LoadGenres() // Загрузить жанры
         {
             try
             {
+                _genres.Clear();
                 var query = "SELECT id, genre FROM event_genre";
                 DataTable genresData = DatabaseHelper.ExecuteQuery(query);
+
+                if (genresData.Rows.Count == 0)
+                {
+                    MessageBox.Show("В базе данных нет жанров мероприятий.\nОбратитесь к администратору.",
+                        "Нет данных", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
                 foreach (DataRow row in genresData.Rows)
                 {
-                    Guid id = row.Field<Guid>("id");
-                    string genre = row.Field<string>("genre");
-                    _genres.Add(id, genre);
+                    _genres.Add(row.Field<Guid>("id"), row.Field<string>("genre"));
                 }
-                genreComboBox.SelectedIndex = -1;
-                genreComboBox.DataSource = _genres;
+
+                genreComboBox.DataSource = _genres.ToList();
                 genreComboBox.DisplayMember = "Value";
                 genreComboBox.ValueMember = "Key";
+                genreComboBox.SelectedIndex = -1;
             }
             catch (Exception ex)
             {
@@ -120,87 +142,67 @@ namespace TicketsServise
                     "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private void addBtn_Click(object sender, EventArgs e)
+        private void addBtn_Click(object sender, EventArgs e) // Добавить исполнителя
         {
-            string? performerName = performerTextBox.Text;
-            string? performerInfo = performerInfoTextBox.Text;
-            if (!string.IsNullOrEmpty(performerName) && !string.IsNullOrEmpty(performerInfo))
+            string performerName = performerTextBox.Text.Trim();
+            string performerInfo = performerInfoTextBox.Text.Trim();
+
+            if (string.IsNullOrEmpty(performerName))
             {
-                _performers.Add(performerName, performerInfo);
-                _performersSrc.ResetBindings(false);
-                performerTextBox.Clear();
-                performerInfoTextBox.Clear();
+                MessageBox.Show("Введите имя исполнителя.", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
-            else
-            {
-                MessageBox.Show("Заполните имя исполнителя.",
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+
+            _performers[performerName] = performerInfo;
+
+            _performersSrc.DataSource = _performers.Keys.ToList();
+            _performersSrc.ResetBindings(false);
+
+            performerTextBox.Clear();
+            performerInfoTextBox.Clear();
         }
-        private void delBtn_Click(object sender, EventArgs e)
+        private void delBtn_Click(object sender, EventArgs e) // Удалить исполниеля
         {
-            if (performersListBox.SelectedItem != null && performersListBox.SelectedItem.ToString() is string selected)
+            if (performersListBox.SelectedItem != null)
             {
+                string selected = performersListBox.SelectedItem.ToString();
                 if (_performers.Remove(selected))
                 {
+                    _performersSrc.DataSource = _performers.Keys.ToList();
                     _performersSrc.ResetBindings(false);
                 }
-                else
-                {
-                    MessageBox.Show("Не удалось удалить исполнителя.",
-                        "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
             }
             else
             {
-                MessageBox.Show("Не выбран исполнитель для удаления.",
-                        "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Выберите исполнителя для удаления.", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private void okBtn_Click(object sender, EventArgs e)
+        private void okBtn_Click(object sender, EventArgs e) // Запрос к БД
         {
             string name = nameTextBox.Text;
-            string dateTime = eventDateTime.ToString("yyyy-MM-dd hh:mm:ss");
-            string? placeId;
-            string? typeId;
-            string? genreId;
-            if (placeComboBox.SelectedValue != null)
+            DateTime dateTime = eventDateTime;
+            if (!(placeComboBox.SelectedValue is Guid placeId))
             {
-                placeId = placeComboBox.SelectedValue.ToString();
-            }
-            else
-            {
-                MessageBox.Show("Не выбрана площадка.",
-                        "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Не выбрана площадка.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            if (typeComboBox.SelectedValue != null)
+
+            if (!(typeComboBox.SelectedValue is Guid typeId))
             {
-                typeId = typeComboBox.SelectedValue.ToString();
-            }
-            else
-            {
-                MessageBox.Show("Не выбран тип мероприятия.",
-                        "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Не выбран тип мероприятия.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            if (genreComboBox.SelectedValue != null)
+
+            if (!(genreComboBox.SelectedValue is Guid genreId))
             {
-                genreId = genreComboBox.SelectedValue.ToString();
-            }
-            else
-            {
-                MessageBox.Show("Не выбран жанр мероприятия.",
-                        "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Не выбран жанр мероприятия.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             string[] performers = _performers.Keys.ToArray();
             string?[] performersInfo = _performers.Values.ToArray();
-            if (string.IsNullOrEmpty(name) ||
-                string.IsNullOrEmpty(dateTime) ||
-                string.IsNullOrEmpty(placeId) ||
-                string.IsNullOrEmpty(typeId) ||
-                string.IsNullOrEmpty(genreId))
+            if (string.IsNullOrEmpty(name))
             {
                 MessageBox.Show("Не все необходимые поля заполнены.", "Ошибка",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -208,9 +210,15 @@ namespace TicketsServise
             }
             try
             {
-                var query = @"CALL new_event( 
-                            @id, @name, @datetime, @place_id, @type_id, @genre_id, 
-                            @performers_array, @performers_info_array);";
+                string query = @"CALL new_event(
+                                @organizer::uuid,
+                                @name::varchar,
+                                @datetime::timestamp,
+                                @place::uuid,
+                                @type::uuid,
+                                @genre::uuid,
+                                @performers::varchar[],
+                                @performers_info::text[])";
                 var parameters = new NpgsqlParameter[]
                 {
                     new NpgsqlParameter("@id", organizerId),
@@ -222,7 +230,7 @@ namespace TicketsServise
                     new NpgsqlParameter("@performers_array", performers),
                     new NpgsqlParameter("@performers_info_array", performersInfo)
                 };
-                var res = DatabaseHelper.ExecuteScalar(query, parameters);
+                var res = DatabaseHelper.ExecuteNonQuery(query, parameters);
             }
             catch (Exception ex)
             {
@@ -230,10 +238,9 @@ namespace TicketsServise
                         "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private void cancelBtn_Click(object sender, EventArgs e)
+        private void cancelBtn_Click(object sender, EventArgs e) // Закрыть окно
         {
             Close();
         }
-
     }
 }
