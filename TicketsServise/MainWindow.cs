@@ -10,12 +10,12 @@ namespace TicketsServise
         private Guid buyerId;
         private Guid organizerId;
         private Guid eventId;
-        private List<EventsInfo> _events;
-        private List<TicketsInfo> _tickets;
-        private Dictionary<Guid, string> _cityFilter;
-        private Dictionary<Guid, string> _placeFilter;
-        private Dictionary<Guid, string> _typeFilter;
-        private Dictionary<Guid, string> _genreFilter;
+        private List<EventsInfo> _events = new List<EventsInfo>();
+        private List<TicketsInfo> _tickets = new List<TicketsInfo>();
+        private Dictionary<Guid, string> _cityFilter = new Dictionary<Guid, string>();
+        private Dictionary<Guid, string> _placeFilter = new Dictionary<Guid, string>();
+        private Dictionary<Guid, string> _typeFilter = new Dictionary<Guid, string>();
+        private Dictionary<Guid, string> _genreFilter = new Dictionary<Guid, string>();
         public MainWindow()
         {
             LoadEvents();

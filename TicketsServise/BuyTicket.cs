@@ -2,14 +2,7 @@
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
-using static QuestPDF.Helpers.Colors;
 
 namespace TicketsServise
 {
@@ -28,10 +21,6 @@ namespace TicketsServise
             paymentTypeComboBox.DataSource = _paymentTypesSrc;
             LoadPaymentTypes();
             InitializeComponent();
-        }
-        private void LoadDataForDoc()
-        {
-            
         }
         private byte[] GenDocument(Ticket t, Event e)
         {

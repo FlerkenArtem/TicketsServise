@@ -6,7 +6,7 @@ namespace TicketsServise
     public partial class NewTicketsWON : Form
     {
         private Guid organizerId;
-        private Dictionary<Guid, string> _events;
+        private Dictionary<Guid, string> _events = new Dictionary<Guid, string>;
         public NewTicketsWON(Guid id)
         {
             InitializeComponent();
@@ -53,7 +53,6 @@ namespace TicketsServise
                 }
             }
         }
-
         private void countEdit_ValueChanged(object sender, EventArgs e)
         {
             if (countEdit.Value > 0)
@@ -65,7 +64,6 @@ namespace TicketsServise
                 countEdit.BackColor = Color.DarkRed;
             }
         }
-
         private void okBtn_Click(object sender, EventArgs e)
         {
             Guid eventId = Guid.Empty;
@@ -111,7 +109,6 @@ namespace TicketsServise
                 }
             }
         }
-
         private void cancelBtn_Click(object sender, EventArgs e)
         {
             Close();

@@ -6,7 +6,7 @@ namespace TicketsServise
     public partial class NewTicketsWN : Form
     {
         Guid organizerId = Guid.Empty;
-        private Dictionary<Guid, string> _events;
+        private Dictionary<Guid, string> _events = new Dictionary<Guid, string>;
         public NewTicketsWN(Guid id)
         {
             InitializeComponent();
@@ -111,7 +111,6 @@ namespace TicketsServise
                 }
             }
         }
-
         private void cancelBtn_Click(object sender, EventArgs e)
         {
             Close();

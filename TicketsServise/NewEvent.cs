@@ -7,11 +7,11 @@ namespace TicketsServise
     public partial class NewEvent : Form
     {
         private Guid organizerId;
-        private Dictionary<string, string?> _performers;
-        private BindingSource _performersSrc;
-        private Dictionary<Guid, string> _places;
-        private Dictionary<Guid, string> _types;
-        private Dictionary<Guid, string> _genres;
+        private Dictionary<string, string?> _performers = new Dictionary<string, string?>();
+        private BindingSource _performersSrc = new BindingSource();
+        private Dictionary<Guid, string> _places = new Dictionary<Guid, string>();
+        private Dictionary<Guid, string> _types = new Dictionary<Guid, string>();
+        private Dictionary<Guid, string> _genres = new Dictionary<Guid, string>();
         private DateTime eventDateTime;
         public NewEvent(Guid id)
         {
