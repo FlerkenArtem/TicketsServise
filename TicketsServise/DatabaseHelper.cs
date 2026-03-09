@@ -79,18 +79,17 @@ namespace TicketsServise
                 using (var connection = new NpgsqlConnection(connectionString))
                 using (var command = new NpgsqlCommand(query, connection))
                 {
-                    if (parameters != null)
+                    if (parameters != null && parameters.Length > 0)
                     {
                         command.Parameters.AddRange(parameters);
                     }
-
                     connection.Open();
                     return command.ExecuteNonQuery();
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Ошибка выполнения запроса: " + ex.Message);
+                Console.WriteLine("Ошибка выполнения запроса: " + ex.Message);
                 return -1;
             }
         }

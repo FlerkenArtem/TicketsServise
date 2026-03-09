@@ -181,6 +181,7 @@ namespace TicketsServise
         }
         private void okBtn_Click(object sender, EventArgs e) // Запрос к БД
         {
+            Guid guid = organizerId;
             string name = nameTextBox.Text;
             DateTime dateTime = eventDateTime;
             if (!(placeComboBox.SelectedValue is Guid placeId))
@@ -210,27 +211,30 @@ namespace TicketsServise
             }
             try
             {
-                string query = @"CALL new_event(
-                                @organizer::uuid,
-                                @name::varchar,
-                                @datetime::timestamp,
-                                @place::uuid,
-                                @type::uuid,
-                                @genre::uuid,
-                                @performers::varchar[],
-                                @performers_info::text[])";
+                string query = @"CALL public.new_event(
+                            @organizer,
+                            @name,
+                            @datetime,
+                            @place,
+                            @type,
+                            @genre,
+                            @performers,
+                            @performers_info)";
+
                 var parameters = new NpgsqlParameter[]
                 {
-                    new NpgsqlParameter("@id", organizerId),
-                    new NpgsqlParameter("@name", name),
-                    new NpgsqlParameter("@datetime", dateTime),
-                    new NpgsqlParameter("@place_id", placeId),
-                    new NpgsqlParameter("@type_id", typeId),
-                    new NpgsqlParameter("@genre_id", genreId),
-                    new NpgsqlParameter("@performers_array", performers),
-                    new NpgsqlParameter("@performers_info_array", performersInfo)
+                    new NpgsqlParameter("organizer", NpgsqlTypes.NpgsqlDbType.Uuid) { Value = guid },
+                    new NpgsqlParameter("name", NpgsqlTypes.NpgsqlDbType.Varchar) { Value = name },
+                    new NpgsqlParameter("datetime", NpgsqlTypes.NpgsqlDbType.Timestamp) { Value = dateTime },
+                    new NpgsqlParameter("place", NpgsqlTypes.NpgsqlDbType.Uuid) { Value = placeId },
+                    new NpgsqlParameter("type", NpgsqlTypes.NpgsqlDbType.Uuid) { Value = typeId },
+                    new NpgsqlParameter("genre", NpgsqlTypes.NpgsqlDbType.Uuid) { Value = genreId },
+                    new NpgsqlParameter("performers", NpgsqlTypes.NpgsqlDbType.Array | NpgsqlTypes.NpgsqlDbType.Varchar) { Value = performers },
+                    new NpgsqlParameter("performers_info", NpgsqlTypes.NpgsqlDbType.Array | NpgsqlTypes.NpgsqlDbType.Text) { Value = performersInfo }
                 };
-                var res = DatabaseHelper.ExecuteNonQuery(query, parameters);
+
+                DatabaseHelper.ExecuteNonQuery(query, parameters);
+                this.Close();
             }
             catch (Exception ex)
             {

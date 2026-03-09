@@ -15,6 +15,8 @@ namespace TicketsServise
         }
         private void LoadEvents()
         {
+            eventComboBox.Items.Clear();
+            _events.Clear();
             if (organizerId == Guid.Empty)
             {
                 MessageBox.Show("Не удалось получить ID организатора.",
@@ -41,7 +43,7 @@ namespace TicketsServise
                         string name = row.Field<string>("name");
                         _events.Add(id, name);
                     }
-                    eventComboBox.DataSource = _events;
+                    eventComboBox.DataSource = _events.ToList();
                     eventComboBox.SelectedIndex = -1;
                     eventComboBox.DisplayMember = "Value";
                     eventComboBox.ValueMember = "Key";
@@ -68,15 +70,13 @@ namespace TicketsServise
         }
         private void okBtn_Click(object sender, EventArgs e)
         {
-            Guid eventId;
-            if (Guid.TryParse(eventComboBox.SelectedValue.ToString(), out Guid id))
+            if (eventComboBox.SelectedValue == null)
             {
-                eventId = id;
+                MessageBox.Show("Выберите мероприятие.", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
-            else
-            {
-                eventId = Guid.Empty;
-            }
+            Guid eventId = (Guid)eventComboBox.SelectedValue;
             decimal price = priceEdit.Value;
             int placeFrom = (int)placeFromEdit.Value;
             int placeTo = (int)placeToEdit.Value;
@@ -101,7 +101,7 @@ namespace TicketsServise
                         new NpgsqlParameter("@place_from", placeFrom),
                         new NpgsqlParameter("@place_to", placeTo)
                     };
-                    var res = DatabaseHelper.ExecuteScalar(query, parameters);
+                    var res = DatabaseHelper.ExecuteNonQuery(query, parameters);
                     Close();
                 }
                 catch (Exception ex)
