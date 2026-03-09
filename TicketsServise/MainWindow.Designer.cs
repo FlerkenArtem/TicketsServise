@@ -107,6 +107,7 @@
             eventsList.Name = "eventsList";
             eventsList.Size = new Size(570, 384);
             eventsList.TabIndex = 5;
+            eventsList.SelectedIndexChanged += eventsList_SelectedIndexChanged;
             // 
             // buyBtn
             // 
@@ -167,6 +168,7 @@
             cancelFilterBtn.TabIndex = 9;
             cancelFilterBtn.Text = "Сброс";
             cancelFilterBtn.UseVisualStyleBackColor = true;
+            cancelFilterBtn.Click += cancelFilterBtn_Click;
             // 
             // genreComboBox
             // 

@@ -3,20 +3,19 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 
 namespace TicketsServise
 {
     public partial class Tickets : Form
     {
-        Guid EventId = Guid.Empty;
-        Guid BuyerId = Guid.Empty;
+        private Guid EventId;
+        private Guid BuyerId;
         private List<Ticket> _tickets = new List<Ticket>();
         private List<Ticket> _cart = new List<Ticket>();
         private BindingSource _ticketsSrc = new BindingSource();
         private BindingSource _cartSrc = new BindingSource();
+
         public Tickets(Guid eventId, Guid buyerId)
         {
             InitializeComponent();
@@ -24,60 +23,66 @@ namespace TicketsServise
             BuyerId = buyerId;
             LoadTickets();
 
-            // Привязка данных билетов к ListBox
             _ticketsSrc.DataSource = _tickets;
             ticketsList.DataSource = _ticketsSrc;
             ticketsList.DisplayMember = "ToString";
 
-            // Привязка данных корзины к ListBox 
             _cartSrc.DataSource = _cart;
             cartList.DataSource = _cartSrc;
             cartList.DisplayMember = "ToString";
+
+            UpdateSumLabel();
         }
+
         private void LoadTickets()
         {
-            if (EventId != Guid.Empty)
+            if (EventId == Guid.Empty)
             {
-                try
-                {
-                    var query = "SELECT available_tickets(@event_id);";
-                    var parameters = new NpgsqlParameter[]
-                    {
-                    new NpgsqlParameter("@event_id", EventId)
-                    };
-                    DataTable availableTickets = DatabaseHelper.ExecuteQuery(query, parameters);
-                    foreach (DataRow row in availableTickets.Rows)
-                    {
-                        Guid id = row.Field<Guid>("id");
-                        string? place = row.Field<string>("place");
-                        decimal price = row.Field<decimal>("price");
-                        Ticket ticket = new Ticket(id, place, price);
-                        _tickets.Add(ticket);
-                        _ticketsSrc.ResetBindings(false);
-                    }
-                    
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Не удалось загрузить билеты.",
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                MessageBox.Show("ID мероприятия пуст.", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
-            else
+
+            try
             {
-                MessageBox.Show("ID мероприятия пуст, невозможно загрузить билеты.",
+                var query = "SELECT * FROM available_tickets(@event_id)";
+                var parameters = new NpgsqlParameter[]
+                {
+                    new NpgsqlParameter("@event_id", EventId)
+                };
+                DataTable data = DatabaseHelper.ExecuteQuery(query, parameters);
+
+                _tickets.Clear();
+                foreach (DataRow row in data.Rows)
+                {
+                    _tickets.Add(new Ticket(
+                        row.Field<Guid>("ticket_id"),
+                        row.Field<string>("place"),
+                        row.Field<decimal>("price")
+                    ));
+                }
+                _ticketsSrc.ResetBindings(false);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка загрузки билетов: {ex.Message}",
                     "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private decimal CountCartSum() // Счет суммы корзины
+
+        private decimal CountCartSum()
         {
             decimal sum = 0;
-            foreach(Ticket ticket in _cart)
-            {
+            foreach (var ticket in _cart)
                 sum += ticket.price;
-            }
             return sum;
         }
+
+        private void UpdateSumLabel()
+        {
+            sumLabel.Text = $"Сумма: {CountCartSum():F2} рублей";
+        }
+
         private void addTicketBtn_Click(object sender, EventArgs e)
         {
             if (ticketsList.SelectedItem is Ticket ticket)
@@ -86,15 +91,15 @@ namespace TicketsServise
                 _tickets.Remove(ticket);
                 _ticketsSrc.ResetBindings(false);
                 _cartSrc.ResetBindings(false);
-                sumLabel.Text = $"Сумма: {CountCartSum} рублей";
+                UpdateSumLabel();
             }
             else
             {
-                MessageBox.Show("Не выбран билет для добавления в корзину.",
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                MessageBox.Show("Выберите билет для добавления.", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
         private void delTicketBtn_Click(object sender, EventArgs e)
         {
             if (cartList.SelectedItem is Ticket ticket)
@@ -103,33 +108,39 @@ namespace TicketsServise
                 _tickets.Add(ticket);
                 _ticketsSrc.ResetBindings(false);
                 _cartSrc.ResetBindings(false);
-                sumLabel.Text = $"Сумма: {CountCartSum} рублей";
+                UpdateSumLabel();
             }
             else
             {
-                MessageBox.Show("Не выбран билет для удаления из корзины.",
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                MessageBox.Show("Выберите билет для удаления.", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
         private void buyBtn_Click(object sender, EventArgs e)
         {
-            if (_cart == null || _cart.Count == 0)
+            if (_cart.Count == 0)
             {
-                MessageBox.Show("Корзина пуста. Для перехода к покупке, добавьте билеты в корзину.",
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Корзина пуста.", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
-            else if (BuyerId == Guid.Empty)
+
+            if (BuyerId == Guid.Empty)
             {
-                MessageBox.Show("ID покупателя не задан.",
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("ID покупателя не задан.", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
-            else
-            {
-                BuyTicket buyTicket = new BuyTicket(_cart, BuyerId);
-                buyTicket.ShowDialog();
-            }
+
+            var buyForm = new BuyTicket(_cart, BuyerId);
+            buyForm.ShowDialog();
+            LoadTickets();
+            _cart.Clear();
+            _cartSrc.ResetBindings(false);
+            UpdateSumLabel();
         }
+
         private void exitBtn_Click(object sender, EventArgs e)
         {
             Close();

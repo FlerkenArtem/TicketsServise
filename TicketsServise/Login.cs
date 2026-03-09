@@ -67,7 +67,7 @@ namespace TicketsServise
                                 AND password = @new_password";
 
                 object result = DatabaseHelper.ExecuteScalar(queryType, parametersAccount);
-                int type = Convert.ToInt32(result ?? 0) == 1 ? 1 : 0; // 1 - организатор, 0 - покупатель
+                int type = Convert.ToInt32(result ?? null) == 1 ? 1 : 0; // 1 - организатор, 0 - покупатель
 
                 AccountType?.Invoke(type);
 

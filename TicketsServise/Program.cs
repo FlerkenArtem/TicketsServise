@@ -1,3 +1,6 @@
+using QuestPDF.Infrastructure;
+using System.ComponentModel;
+
 namespace TicketsServise
 {
     internal static class Program
@@ -10,6 +13,9 @@ namespace TicketsServise
         {
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
+
+            QuestPDF.Settings.License = LicenseType.Community;
+
             if (DatabaseHelper.TestConnection())
             {
                 ApplicationConfiguration.Initialize();

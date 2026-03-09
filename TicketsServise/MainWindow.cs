@@ -18,8 +18,12 @@ namespace TicketsServise
         private Dictionary<Guid, string> _genreFilter = new Dictionary<Guid, string>();
         public MainWindow()
         {
-            LoadEvents();
             InitializeComponent();
+            LoadCities();
+            LoadPlaces();
+            LoadTypes();
+            LoadGenres();
+            LoadEvents();
         }
         private void buyerRegTool_Click(object sender, EventArgs e)
         {
@@ -90,7 +94,7 @@ namespace TicketsServise
                         OrganizerToolsLoad(id);
                     };
                 }
-                else if (type == 2)
+                else if (type == 0)
                 {
                     login.LoginEnd += (id) =>
                     {
@@ -200,6 +204,119 @@ namespace TicketsServise
                 tickets.ShowDialog();
             }
         }
+        private void LoadCities()
+        {
+            var query = "SELECT id, name FROM city;";
+            DataTable res = DatabaseHelper.ExecuteQuery(query);
+            if (res.Rows.Count == 0)
+            {
+                MessageBox.Show("В базе данных нет ни одного города.",
+                        "Нет данных", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            foreach (DataRow row in res.Rows)
+            {
+                _cityFilter.Add(row.Field<Guid>("id"), row.Field<string>("name"));
+            }
+            cityComboBox.DataSource = _cityFilter.ToList();
+            cityComboBox.SelectedIndex = -1;
+            cityComboBox.ValueMember = "Key";
+            cityComboBox.DisplayMember = "Value";
+
+        }
+        private void LoadPlaces() // Загрузка площадок
+        {
+            try
+            {
+                _placeFilter.Clear();
+                var query = "SELECT id, name FROM place";
+                DataTable placesData = DatabaseHelper.ExecuteQuery(query);
+
+                if (placesData.Rows.Count == 0)
+                {
+                    MessageBox.Show("В базе данных нет ни одной площадки.\nСначала создайте площадку через меню организатора.",
+                        "Нет данных", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                foreach (DataRow row in placesData.Rows)
+                {
+                    _placeFilter.Add(row.Field<Guid>("id"), row.Field<string>("name"));
+                }
+
+                placeComboBox.DataSource = _placeFilter.ToList();
+                placeComboBox.DisplayMember = "Value";
+                placeComboBox.ValueMember = "Key";
+                placeComboBox.SelectedIndex = -1;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Не удалось загрузить площадки из БД: {ex}",
+                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private void LoadTypes() // Загрузить типы мероприятий
+        {
+            try
+            {
+                _typeFilter.Clear();
+                var query = "SELECT id, type FROM event_type";
+                DataTable typesData = DatabaseHelper.ExecuteQuery(query);
+
+                if (typesData.Rows.Count == 0)
+                {
+                    MessageBox.Show("В базе данных нет типов мероприятий.\nОбратитесь к администратору.",
+                        "Нет данных", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                foreach (DataRow row in typesData.Rows)
+                {
+                    _typeFilter.Add(row.Field<Guid>("id"), row.Field<string>("type"));
+                }
+
+                typeComboBox.DataSource = _typeFilter.ToList();
+                typeComboBox.DisplayMember = "Value";
+                typeComboBox.ValueMember = "Key";
+                typeComboBox.SelectedIndex = -1;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Не удалось загрузить типы мероприятий из БД: {ex}",
+                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private void LoadGenres() // Загрузить жанры
+        {
+            try
+            {
+                _genreFilter.Clear();
+                var query = "SELECT id, genre FROM event_genre";
+                DataTable genresData = DatabaseHelper.ExecuteQuery(query);
+
+                if (genresData.Rows.Count == 0)
+                {
+                    MessageBox.Show("В базе данных нет жанров мероприятий.\nОбратитесь к администратору.",
+                        "Нет данных", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                foreach (DataRow row in genresData.Rows)
+                {
+                    _genreFilter.Add(row.Field<Guid>("id"), row.Field<string>("genre"));
+                }
+
+                genreComboBox.DataSource = _genreFilter.ToList();
+                genreComboBox.DisplayMember = "Value";
+                genreComboBox.ValueMember = "Key";
+                genreComboBox.SelectedIndex = -1;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Не удалось загрузить жанры мероприятий из БД: {ex}",
+                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
         private void LoadEvents()
         {
             if (_events != null)
@@ -242,6 +359,9 @@ namespace TicketsServise
                     "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+            eventsList.DataSource = null;
+            eventsList.DataSource = _events;
+            eventsList.DisplayMember = "ToString";
         }
         private void LoadEvents(string search)
         {
@@ -271,7 +391,7 @@ namespace TicketsServise
                 {
                     new NpgsqlParameter("@search", search)
                 };
-                DataTable dt = DatabaseHelper.ExecuteQuery(query);
+                DataTable dt = DatabaseHelper.ExecuteQuery(query, parameters);
                 foreach (DataRow row in dt.Rows)
                 {
                     EventsInfo eventInfo = new EventsInfo(
@@ -294,6 +414,9 @@ namespace TicketsServise
                     "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+            eventsList.DataSource = null;
+            eventsList.DataSource = _events;
+            eventsList.DisplayMember = "ToString";
         }
         private void LoadEventsFilter(string city)
         {
@@ -316,7 +439,7 @@ namespace TicketsServise
                 {
                     new NpgsqlParameter("@filter_city", city)
                 };
-                DataTable dt = DatabaseHelper.ExecuteQuery(query);
+                DataTable dt = DatabaseHelper.ExecuteQuery(query, parameters);
                 foreach (DataRow row in dt.Rows)
                 {
                     EventsInfo eventInfo = new EventsInfo(
@@ -339,6 +462,9 @@ namespace TicketsServise
                     "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+            eventsList.DataSource = null;
+            eventsList.DataSource = _events;
+            eventsList.DisplayMember = "ToString";
         }
         private void LoadEventsFilter(string city, string place)
         {
@@ -363,7 +489,7 @@ namespace TicketsServise
                     new NpgsqlParameter("@filter_city", city),
                     new NpgsqlParameter("@filter_place", place),
                 };
-                DataTable dt = DatabaseHelper.ExecuteQuery(query);
+                DataTable dt = DatabaseHelper.ExecuteQuery(query, parameters);
                 foreach (DataRow row in dt.Rows)
                 {
                     EventsInfo eventInfo = new EventsInfo(
@@ -386,6 +512,9 @@ namespace TicketsServise
                     "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+            eventsList.DataSource = null;
+            eventsList.DataSource = _events;
+            eventsList.DisplayMember = "ToString";
         }
         private void LoadEventsFilter(string city, string place, string type)
         {
@@ -406,7 +535,13 @@ namespace TicketsServise
                             WHERE city = @filter_city
                             AND place = @filter_place
                             AND type = @filter_type;";
-                DataTable dt = DatabaseHelper.ExecuteQuery(query);
+                var parameters = new NpgsqlParameter[]
+                {
+                    new NpgsqlParameter("@filter_city", city),
+                    new NpgsqlParameter("@filter_place", place),
+                    new NpgsqlParameter("@filter_type", type)
+                };
+                DataTable dt = DatabaseHelper.ExecuteQuery(query, parameters);
                 foreach (DataRow row in dt.Rows)
                 {
                     EventsInfo eventInfo = new EventsInfo(
@@ -429,6 +564,9 @@ namespace TicketsServise
                     "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+            eventsList.DataSource = null;
+            eventsList.DataSource = _events;
+            eventsList.DisplayMember = "ToString";
         }
         private void LoadEventsFilter(string city, string place, string type, string genre)
         {
@@ -473,48 +611,55 @@ namespace TicketsServise
                     "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+            eventsList.DataSource = null;
+            eventsList.DataSource = _events;
+            eventsList.DisplayMember = "ToString";
         }
         private void LoadTickets()
         {
-            if (buyerId != Guid.Empty)
+            if (buyerId == Guid.Empty)
             {
-                try
-                {
-                    var query = "SELECT tickets_info (@buyer_id);";
-                    var parameters = new NpgsqlParameter[]
-                    {
-                        new NpgsqlParameter("@buyer_id", buyerId)
-                    };
-                    DataTable dt = DatabaseHelper.ExecuteQuery(query);
-                    foreach (DataRow row in dt.Rows)
-                    {
-                        string? name = row.Field<string>("name");
-                        string? place = row.Field<string>("place");
-                        byte[]? pdf = row.Field<byte[]>("file");
-                        if (name == null || place == null || pdf == null)
-                        {
-                            MessageBox.Show("Пустой билет",
-                                "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            continue;
-                        }
-                        else
-                        {
-                            _tickets.Add(new TicketsInfo(name, place, pdf));
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.ToString(),
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-            }
-            else
-            {
-                MessageBox.Show("Отсутствует ID покупателя",
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Отсутствует ID покупателя", "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
+            }
+
+            try
+            {
+                _tickets.Clear();
+
+                var query = "SELECT * FROM tickets_info(@buyer_id);";
+                var parameters = new NpgsqlParameter[]
+                {
+            new NpgsqlParameter("@buyer_id", buyerId)
+                };
+
+                DataTable dt = DatabaseHelper.ExecuteQuery(query, parameters);
+
+                foreach (DataRow row in dt.Rows)
+                {
+                    string name = row.Field<string>("event_name");
+                    string place = row.Field<string>("place");
+                    byte[] pdf = row.Field<byte[]>("file");
+
+                    if (name == null || place == null || pdf == null)
+                    {
+                        MessageBox.Show("Пустой билет", "Ошибка",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        continue;
+                    }
+
+                    _tickets.Add(new TicketsInfo(name, place, pdf));
+                }
+
+                ticketsList.DataSource = null;
+                ticketsList.DataSource = _tickets;
+                ticketsList.DisplayMember = "ToString";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString(), "Ошибка",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
         private void saveTicketBtn_Click(object sender, EventArgs e)
@@ -559,7 +704,7 @@ namespace TicketsServise
                             try
                             {
                                 File.WriteAllBytes(saveFileDialog.FileName, t.Pdf);
-                                if (File.Exists(fileName))
+                                if (File.Exists(saveFileDialog.FileName))
                                 {
                                     DialogResult result = MessageBox.Show(
                                         $"Билет успешно сохранен:\n{saveFileDialog.FileName}" +
@@ -651,6 +796,17 @@ namespace TicketsServise
                 LoadEvents(searchText.Text);
             }
         }
+        private void cancelFilterBtn_Click(object sender, EventArgs e)
+        {
+            cityComboBox.SelectedIndex = -1;
+            placeComboBox.SelectedIndex = -1;
+            typeComboBox.SelectedIndex = -1;
+            genreComboBox.SelectedIndex = -1;
+            placeComboBox.Enabled = false;
+            typeComboBox.Enabled = false;
+            genreComboBox.Enabled = false;
+            LoadEvents();
+        }
         private void cityComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cityComboBox.SelectedIndex != -1)
@@ -679,6 +835,17 @@ namespace TicketsServise
             {
                 genreComboBox.Enabled= true;
                 genreComboBox.SelectedIndex = -1;
+            }
+        }
+        private void eventsList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (eventsList.SelectedItem is EventsInfo selectedEvent)
+            {
+                eventId = selectedEvent.Id;
+            }
+            else
+            {
+                eventId = Guid.Empty;
             }
         }
     }

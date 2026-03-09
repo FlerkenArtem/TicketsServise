@@ -12,6 +12,7 @@ namespace TicketsServise
 
         public Ticket(Guid id, string place, decimal price)
         {
+            this.id = id;
             this.place = place;
             this.price = price;
         }

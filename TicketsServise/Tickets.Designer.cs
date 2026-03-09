@@ -85,7 +85,6 @@
             cartList.FormattingEnabled = true;
             cartList.Location = new Point(576, 12);
             cartList.Name = "cartList";
-            cartList.SelectionMode = SelectionMode.None;
             cartList.Size = new Size(194, 384);
             cartList.TabIndex = 5;
             // 
