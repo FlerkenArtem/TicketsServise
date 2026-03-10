@@ -386,7 +386,7 @@ namespace TicketsServise
                             genre,
                             date_display
                             FROM event_info
-                            WHERE name = @search;";
+                            WHERE event_name = @search;";
                 var parameters = new NpgsqlParameter[]
                 {
                     new NpgsqlParameter("@search", search)
