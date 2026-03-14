@@ -14,6 +14,7 @@ namespace TicketsServise
         private BindingSource _paymentTypesSrc = new BindingSource();
         private List<byte[]> _documents = new List<byte[]>();
         private readonly IDatabase _db;
+        private TicketDoc _ticketDoc;
         public BuyTicket(IDatabase db, List<Ticket> tickets, Guid buyer)
         {
             InitializeComponent();
@@ -26,41 +27,6 @@ namespace TicketsServise
             paymentTypeComboBox.DisplayMember = "Value";
             paymentTypeComboBox.ValueMember = "Key";
             paymentTypeComboBox.SelectedIndex = -1;
-        }
-        private byte[] GenDocument(Ticket t, Event e)
-        {
-            byte[] doc = Document.Create(container =>
-            {
-                container.Page(page =>
-                {
-                    page.Size(PageSizes.A4);
-                    page.Margin(2, Unit.Centimetre);
-                    page.PageColor(Colors.White);
-                    page.DefaultTextStyle(x =>
-                    x.FontSize(14));
-
-                    page.Header()
-                    .Text($"Билет на мероприятие: {e.Name}")
-                    .SemiBold()
-                    .FontSize(24)
-                    .AlignCenter();
-
-                    page.Content()
-                    .AlignLeft()
-                    .Text($"Дата и время: {e.EventDateTime.ToString()}" +
-                          $"\nПлощадка проведения: {e.Place}" +
-                          $"\nМесто в зале: {t.place}" +
-                          $"\nСтоимость: {t.price.ToString()} рублей");
-
-                    page.Footer()
-                    .AlignBottom()
-                    .Text($"Организатор мероприятия: {e.Orzanizer}" +
-                          "\nБилет создан с помощью программы \"Платформа для организации мероприятий и продажи билетов\".")
-                    .Thin()
-                    .FontSize(8);
-                });
-            }).GeneratePdf();
-            return doc;
         }
         private void LoadPaymentTypes()
         {
@@ -111,7 +77,7 @@ namespace TicketsServise
                     string place = row.Field<string>("place_name");
 
                     Event ev = new Event(eId, name, organizer, dateTime, place);
-                    byte[] doc = GenDocument(ticket, ev);
+                    byte[] doc = _ticketDoc.Generate(ticket, ev);
                     _documents.Add(doc);
                 }
                 catch (Exception ex)
