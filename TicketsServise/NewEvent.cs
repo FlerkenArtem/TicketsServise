@@ -13,10 +13,12 @@ namespace TicketsServise
         private Dictionary<Guid, string> _types = new Dictionary<Guid, string>();
         private Dictionary<Guid, string> _genres = new Dictionary<Guid, string>();
         private DateTime eventDateTime;
-        public NewEvent(Guid id)
+        private readonly IDatabase _db;
+        public NewEvent(IDatabase db, Guid id)
         {
             this.organizerId = id;
             InitializeComponent();
+            _db = db;
             _performersSrc.DataSource = _performers.Keys.ToList();
             performersListBox.DataSource = _performersSrc;
             LoadPlaces();
@@ -55,7 +57,7 @@ namespace TicketsServise
             {
                 _places.Clear();
                 var query = "SELECT id, name FROM place";
-                DataTable placesData = DatabaseHelper.ExecuteQuery(query);
+                DataTable placesData = _db.ExecuteQuery(query);
 
                 if (placesData.Rows.Count == 0)
                 {
@@ -86,7 +88,7 @@ namespace TicketsServise
             {
                 _types.Clear();
                 var query = "SELECT id, type FROM event_type";
-                DataTable typesData = DatabaseHelper.ExecuteQuery(query);
+                DataTable typesData = _db.ExecuteQuery(query);
 
                 if (typesData.Rows.Count == 0)
                 {
@@ -117,7 +119,7 @@ namespace TicketsServise
             {
                 _genres.Clear();
                 var query = "SELECT id, genre FROM event_genre";
-                DataTable genresData = DatabaseHelper.ExecuteQuery(query);
+                DataTable genresData = _db.ExecuteQuery(query);
 
                 if (genresData.Rows.Count == 0)
                 {
@@ -233,7 +235,7 @@ namespace TicketsServise
                     new NpgsqlParameter("performers_info", NpgsqlTypes.NpgsqlDbType.Array | NpgsqlTypes.NpgsqlDbType.Text) { Value = performersInfo }
                 };
 
-                DatabaseHelper.ExecuteNonQuery(query, parameters);
+                _db.ExecuteNonQuery(query, parameters);
                 this.Close();
             }
             catch (Exception ex)

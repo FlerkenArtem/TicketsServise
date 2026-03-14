@@ -13,9 +13,11 @@ namespace TicketsServise
         private List<string> _streets = new List<string>();
         private List<string> _houses = new List<string>();
         private List<string> _flats = new List<string>();
-        public NewPlace()
+        private readonly IDatabase _db;
+        public NewPlace(IDatabase db)
         {
             InitializeComponent();
+            _db = db;
             LoadRegions();
             LoadDistricts();
             LoadCities();
@@ -30,7 +32,7 @@ namespace TicketsServise
             try
             {
                 var query = "SELECT name FROM region;";
-                DataTable regions = DatabaseHelper.ExecuteQuery(query);
+                DataTable regions = _db.ExecuteQuery(query);
                 foreach (DataRow row in regions.Rows)
                 {
                     string name = row.Field<string>("name");
@@ -51,7 +53,7 @@ namespace TicketsServise
             try
             {
                 var query = "SELECT name FROM district;";
-                DataTable districts = DatabaseHelper.ExecuteQuery(query);
+                DataTable districts = _db.ExecuteQuery(query);
                 foreach (DataRow row in districts.Rows)
                 {
                     string name = row.Field<string>("name");
@@ -72,7 +74,7 @@ namespace TicketsServise
             try
             {
                 var query = "SELECT name FROM city;";
-                DataTable cities = DatabaseHelper.ExecuteQuery(query);
+                DataTable cities = _db.ExecuteQuery(query);
                 foreach (DataRow row in cities.Rows)
                 {
                     string name = row.Field<string>("name");
@@ -93,7 +95,7 @@ namespace TicketsServise
             try
             {
                 var query = "SELECT name FROM area;";
-                DataTable areas = DatabaseHelper.ExecuteQuery(query);
+                DataTable areas = _db.ExecuteQuery(query);
                 foreach (DataRow row in areas.Rows)
                 {
                     string name = row.Field<string>("name");
@@ -114,7 +116,7 @@ namespace TicketsServise
             try
             {
                 var query = "SELECT name FROM street;";
-                DataTable streets = DatabaseHelper.ExecuteQuery(query);
+                DataTable streets = _db.ExecuteQuery(query);
                 foreach (DataRow row in streets.Rows)
                 {
                     string name = row.Field<string>("name");
@@ -135,7 +137,7 @@ namespace TicketsServise
             try
             {
                 var query = "SELECT number FROM house;";
-                DataTable houses = DatabaseHelper.ExecuteQuery(query);
+                DataTable houses = _db.ExecuteQuery(query);
                 foreach (DataRow row in houses.Rows)
                 {
                     string number = row.Field<string>("number");
@@ -156,7 +158,7 @@ namespace TicketsServise
             try
             {
                 var query = "SELECT number FROM flat;";
-                DataTable flats = DatabaseHelper.ExecuteQuery(query);
+                DataTable flats = _db.ExecuteQuery(query);
                 foreach (DataRow row in flats.Rows)
                 {
                     string number = row.Field<string>("number");
@@ -301,7 +303,7 @@ namespace TicketsServise
                     new NpgsqlParameter("@flat", flat),
                     new NpgsqlParameter("@index", index)
                 };
-                var res = DatabaseHelper.ExecuteScalar(query, parameters);
+                var res = _db.ExecuteScalar(query, parameters);
                 this.Close();
             }
             catch (Exception ex)

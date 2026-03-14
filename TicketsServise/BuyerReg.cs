@@ -5,9 +5,11 @@ namespace TicketsServise
 {
     public partial class BuyerReg : Form
     {
-        public BuyerReg()
+        private readonly IDatabase _db;
+        public BuyerReg(IDatabase db)
         {
             InitializeComponent();
+            _db = db;
         }
         public event Action<Guid> RegEnd;
         Guid buyerId;
@@ -20,7 +22,7 @@ namespace TicketsServise
             {
                 new NpgsqlParameter("@phone", phoneTextBox.Text),
             };
-            var queryResult = DatabaseHelper.ExecuteScalar(uniquePhoneQuery, phoneParameters);
+            var queryResult = _db.ExecuteScalar(uniquePhoneQuery, phoneParameters);
             Regex regex = new Regex(@"^\+7 \(9\d{2}\) \d{3}-\d{2}-\d{2}$");
             if (Convert.ToInt32(queryResult) == 1 && regex.IsMatch(phoneTextBox.Text))
             {
@@ -44,7 +46,7 @@ namespace TicketsServise
             {
                 new NpgsqlParameter("@email", emailTextBox.Text),
             };
-            var queryResult = DatabaseHelper.ExecuteScalar(uniqueEmailQuery, emailParameters);
+            var queryResult = _db.ExecuteScalar(uniqueEmailQuery, emailParameters);
             Regex regex = new Regex(@"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$");
             if (Convert.ToInt32(queryResult) == 1 && regex.IsMatch(emailTextBox.Text))
             {
@@ -127,7 +129,7 @@ namespace TicketsServise
             {
                 new NpgsqlParameter("@login", loginTextBox.Text),
             };
-            var queryResult = DatabaseHelper.ExecuteScalar(uniqueLoginQuery, loginParameters);
+            var queryResult = _db.ExecuteScalar(uniqueLoginQuery, loginParameters);
             Regex regex = new Regex(@"^[A-Za-z0-9!@#$%^&*()_\-+=]{8,20}$");
             if (Convert.ToInt32(queryResult) == 1 && regex.IsMatch(loginTextBox.Text))
             {
@@ -195,7 +197,7 @@ namespace TicketsServise
                     new NpgsqlParameter("@new_name", name),
                     new NpgsqlParameter("@new_patronymic", patronymic)
                 };
-                var buyerResult = DatabaseHelper.ExecuteScalar(buyerRegQuery, buyerRegParameters);
+                var buyerResult = _db.ExecuteScalar(buyerRegQuery, buyerRegParameters);
                 if (buyerResult != null && buyerResult != DBNull.Value)
                 {
                     if (buyerId is Guid guid)

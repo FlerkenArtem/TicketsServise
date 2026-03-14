@@ -7,9 +7,11 @@ namespace TicketsServise
     {
         Guid organizerId = Guid.Empty;
         private Dictionary<Guid, string> _events = new Dictionary<Guid, string>();
-        public NewTicketsWN(Guid id)
+        private readonly IDatabase _db;
+        public NewTicketsWN(IDatabase db,Guid id)
         {
             InitializeComponent();
+            _db = db;
             organizerId = id;
             LoadEvents();
         }
@@ -36,7 +38,7 @@ namespace TicketsServise
                     {
                         new NpgsqlParameter("@organizer_id", organizerId)
                     };
-                    DataTable events = DatabaseHelper.ExecuteQuery(query, parameters);
+                    DataTable events = _db.ExecuteQuery(query, parameters);
                     foreach (DataRow row in events.Rows)
                     {
                         Guid id = row.Field<Guid>("id");
@@ -101,7 +103,7 @@ namespace TicketsServise
                         new NpgsqlParameter("@place_from", placeFrom),
                         new NpgsqlParameter("@place_to", placeTo)
                     };
-                    var res = DatabaseHelper.ExecuteNonQuery(query, parameters);
+                    var res = _db.ExecuteNonQuery(query, parameters);
                     Close();
                 }
                 catch (Exception ex)

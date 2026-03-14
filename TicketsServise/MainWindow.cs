@@ -16,9 +16,11 @@ namespace TicketsServise
         private Dictionary<Guid, string> _placeFilter = new Dictionary<Guid, string>();
         private Dictionary<Guid, string> _typeFilter = new Dictionary<Guid, string>();
         private Dictionary<Guid, string> _genreFilter = new Dictionary<Guid, string>();
-        public MainWindow()
+        private readonly IDatabase _db;
+        public MainWindow(IDatabase db)
         {
             InitializeComponent();
+            _db = db;
             LoadCities();
             LoadPlaces();
             LoadTypes();
@@ -27,7 +29,7 @@ namespace TicketsServise
         }
         private void buyerRegTool_Click(object sender, EventArgs e)
         {
-            BuyerReg buyerReg = new BuyerReg();
+            BuyerReg buyerReg = new BuyerReg(_db);
             buyerReg.RegEnd += (id) =>
                 {
                     BuyerToolsLoad(id);
@@ -36,7 +38,7 @@ namespace TicketsServise
         }
         private void organizerRegTool_Click(object sender, EventArgs e)
         {
-            OrganizerReg organizerReg = new OrganizerReg();
+            OrganizerReg organizerReg = new OrganizerReg(_db);
             organizerReg.ShowDialog();
             organizerReg.RegEnd += (id) =>
             {
@@ -84,7 +86,7 @@ namespace TicketsServise
         }
         private void loginTool_Click(object sender, EventArgs e)
         {
-            Login login = new Login();
+            Login login = new Login(_db);
             login.AccountType += (type) =>
             {
                 if (type == 1)
@@ -140,7 +142,7 @@ namespace TicketsServise
         {
             if (organizerId != Guid.Empty)
             {
-                NewEvent newEvent = new NewEvent(organizerId);
+                NewEvent newEvent = new NewEvent(_db, organizerId);
                 newEvent.ShowDialog();
             }
             else
@@ -153,7 +155,7 @@ namespace TicketsServise
         {
             if (organizerId != Guid.Empty)
             {
-                NewPlace newPlace = new NewPlace();
+                NewPlace newPlace = new NewPlace(_db);
                 newPlace.ShowDialog();
             }
             else
@@ -172,7 +174,7 @@ namespace TicketsServise
             }
             else
             {
-                NewTicketsWN newTickets = new NewTicketsWN(organizerId);
+                NewTicketsWN newTickets = new NewTicketsWN(_db, organizerId);
                 newTickets.ShowDialog();
             }
         }
@@ -186,7 +188,7 @@ namespace TicketsServise
             }
             else
             {
-                NewTicketsWON newTickets = new NewTicketsWON(organizerId);
+                NewTicketsWON newTickets = new NewTicketsWON(_db, organizerId);
                 newTickets.ShowDialog();
             }
         }
@@ -200,14 +202,14 @@ namespace TicketsServise
             }
             else
             {
-                Tickets tickets = new Tickets(eventId, buyerId);
+                Tickets tickets = new Tickets(_db, eventId, buyerId);
                 tickets.ShowDialog();
             }
         }
         private void LoadCities()
         {
             var query = "SELECT id, name FROM city;";
-            DataTable res = DatabaseHelper.ExecuteQuery(query);
+            DataTable res = _db.ExecuteQuery(query);
             if (res.Rows.Count == 0)
             {
                 MessageBox.Show("В базе данных нет ни одного города.",
@@ -230,7 +232,7 @@ namespace TicketsServise
             {
                 _placeFilter.Clear();
                 var query = "SELECT id, name FROM place";
-                DataTable placesData = DatabaseHelper.ExecuteQuery(query);
+                DataTable placesData = _db.ExecuteQuery(query);
 
                 if (placesData.Rows.Count == 0)
                 {
@@ -261,7 +263,7 @@ namespace TicketsServise
             {
                 _typeFilter.Clear();
                 var query = "SELECT id, type FROM event_type";
-                DataTable typesData = DatabaseHelper.ExecuteQuery(query);
+                DataTable typesData = _db.ExecuteQuery(query);
 
                 if (typesData.Rows.Count == 0)
                 {
@@ -292,7 +294,7 @@ namespace TicketsServise
             {
                 _genreFilter.Clear();
                 var query = "SELECT id, genre FROM event_genre";
-                DataTable genresData = DatabaseHelper.ExecuteQuery(query);
+                DataTable genresData = _db.ExecuteQuery(query);
 
                 if (genresData.Rows.Count == 0)
                 {
@@ -336,7 +338,7 @@ namespace TicketsServise
                             genre,
                             date_display
                             FROM event_info;";
-                DataTable dt = DatabaseHelper.ExecuteQuery(query);
+                DataTable dt = _db.ExecuteQuery(query);
                 foreach (DataRow row in dt.Rows)
                 {
                     EventsInfo eventInfo = new EventsInfo(
@@ -391,7 +393,7 @@ namespace TicketsServise
                 {
                     new NpgsqlParameter("@search", search)
                 };
-                DataTable dt = DatabaseHelper.ExecuteQuery(query, parameters);
+                DataTable dt = _db.ExecuteQuery(query, parameters);
                 foreach (DataRow row in dt.Rows)
                 {
                     EventsInfo eventInfo = new EventsInfo(
@@ -439,7 +441,7 @@ namespace TicketsServise
                 {
                     new NpgsqlParameter("@filter_city", city)
                 };
-                DataTable dt = DatabaseHelper.ExecuteQuery(query, parameters);
+                DataTable dt = _db.ExecuteQuery(query, parameters);
                 foreach (DataRow row in dt.Rows)
                 {
                     EventsInfo eventInfo = new EventsInfo(
@@ -489,7 +491,7 @@ namespace TicketsServise
                     new NpgsqlParameter("@filter_city", city),
                     new NpgsqlParameter("@filter_place", place),
                 };
-                DataTable dt = DatabaseHelper.ExecuteQuery(query, parameters);
+                DataTable dt = _db.ExecuteQuery(query, parameters);
                 foreach (DataRow row in dt.Rows)
                 {
                     EventsInfo eventInfo = new EventsInfo(
@@ -541,7 +543,7 @@ namespace TicketsServise
                     new NpgsqlParameter("@filter_place", place),
                     new NpgsqlParameter("@filter_type", type)
                 };
-                DataTable dt = DatabaseHelper.ExecuteQuery(query, parameters);
+                DataTable dt = _db.ExecuteQuery(query, parameters);
                 foreach (DataRow row in dt.Rows)
                 {
                     EventsInfo eventInfo = new EventsInfo(
@@ -588,7 +590,7 @@ namespace TicketsServise
                             AND place = @filter_place
                             AND type = @filter_type
                             AND genre = @filter_genre;";
-                DataTable dt = DatabaseHelper.ExecuteQuery(query);
+                DataTable dt = _db.ExecuteQuery(query);
                 foreach (DataRow row in dt.Rows)
                 {
                     EventsInfo eventInfo = new EventsInfo(
@@ -634,7 +636,7 @@ namespace TicketsServise
             new NpgsqlParameter("@buyer_id", buyerId)
                 };
 
-                DataTable dt = DatabaseHelper.ExecuteQuery(query, parameters);
+                DataTable dt = _db.ExecuteQuery(query, parameters);
 
                 foreach (DataRow row in dt.Rows)
                 {

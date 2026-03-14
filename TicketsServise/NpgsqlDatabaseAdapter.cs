@@ -1,35 +1,26 @@
 ﻿using Npgsql;
+using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Text;
 
 namespace TicketsServise
 {
-    public static class DatabaseHelper
+    public class NpgsqlDatabaseAdapter : IDatabase
     {
-        private static string connectionString = "Host=localhost;Database=tickets_servise;Username=postgres;Password=postgres";
-        public static string ConnectionString => connectionString;
-        public static bool TestConnection()
+        public NpgsqlDatabaseAdapter(string connectionString = "Host=localhost;Database=tickets_servise;Username=postgres;Password=postgres")
         {
-            try
-            {
-                using (var connection = new NpgsqlConnection(connectionString))
-                {
-                    connection.Open();
-                    return true;
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Ошибка подключения к БД: " + ex.Message);
-                return false;
-            }
+            _connectionString = connectionString;
         }
-        public static DataTable ExecuteQuery(string query, NpgsqlParameter[] parameters = null)
+        private static string _connectionString = "Host=localhost;Database=tickets_servise;Username=postgres;Password=postgres";
+        public static string ConnectionString => _connectionString;
+        public DataTable ExecuteQuery(string query, NpgsqlParameter[] parameters = null)
         {
             var dataTable = new DataTable();
 
             try
             {
-                using (var connection = new NpgsqlConnection(connectionString))
+                using (var connection = new NpgsqlConnection(_connectionString))
                 using (var command = new NpgsqlCommand(query, connection))
                 {
                     if (parameters != null)
@@ -50,11 +41,11 @@ namespace TicketsServise
             }
             return dataTable;
         }
-        public static object ExecuteScalar(string query, NpgsqlParameter[] parameters = null)
+        public object ExecuteScalar(string query, NpgsqlParameter[] parameters = null)
         {
             try
             {
-                using (var connection = new NpgsqlConnection(connectionString))
+                using (var connection = new NpgsqlConnection(_connectionString))
                 using (var command = new NpgsqlCommand(query, connection))
                 {
                     if (parameters != null)
@@ -72,11 +63,11 @@ namespace TicketsServise
                 return null;
             }
         }
-        public static int ExecuteNonQuery(string query, NpgsqlParameter[] parameters = null)
+        public int ExecuteNonQuery(string query, NpgsqlParameter[] parameters = null)
         {
             try
             {
-                using (var connection = new NpgsqlConnection(connectionString))
+                using (var connection = new NpgsqlConnection(_connectionString))
                 using (var command = new NpgsqlCommand(query, connection))
                 {
                     if (parameters != null && parameters.Length > 0)

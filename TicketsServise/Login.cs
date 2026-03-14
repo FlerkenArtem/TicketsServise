@@ -5,8 +5,10 @@ namespace TicketsServise
 {
     public partial class Login : Form
     {
-        public Login()
+        private readonly IDatabase _db;
+        public Login(IDatabase db)
         {
+            _db = db;
             InitializeComponent();
         }
         public event Action<Guid> LoginEnd;
@@ -66,7 +68,7 @@ namespace TicketsServise
                                 AND login = @new_login 
                                 AND password = @new_password";
 
-                object result = DatabaseHelper.ExecuteScalar(queryType, parametersAccount);
+                object result = _db.ExecuteScalar(queryType, parametersAccount);
                 int type = Convert.ToInt32(result ?? null) == 1 ? 1 : 0; // 1 - организатор, 0 - покупатель
 
                 AccountType?.Invoke(type);
@@ -78,7 +80,7 @@ namespace TicketsServise
                     new NpgsqlParameter("@new_login", login),
                     new NpgsqlParameter("@new_password", password)
                 };
-                var res = DatabaseHelper.ExecuteScalar(queryId, parametersId);
+                var res = _db.ExecuteScalar(queryId, parametersId);
 
                 if (res != null && res != DBNull.Value)
                 {

@@ -15,17 +15,9 @@ namespace TicketsServise
             // see https://aka.ms/applicationconfiguration.
 
             QuestPDF.Settings.License = LicenseType.Community;
-
-            if (DatabaseHelper.TestConnection())
-            {
-                ApplicationConfiguration.Initialize();
-                Application.Run(new MainWindow());
-            }
-            else
-            {
-                MessageBox.Show("Не удалось подключиться к БД.",
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            var db = new NpgsqlDatabaseAdapter();
+            ApplicationConfiguration.Initialize();
+            Application.Run(new MainWindow(db));
         }
     }
 }

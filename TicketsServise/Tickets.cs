@@ -15,10 +15,11 @@ namespace TicketsServise
         private List<Ticket> _cart = new List<Ticket>();
         private BindingSource _ticketsSrc = new BindingSource();
         private BindingSource _cartSrc = new BindingSource();
-
-        public Tickets(Guid eventId, Guid buyerId)
+        private readonly IDatabase _db;
+        public Tickets(IDatabase db ,Guid eventId, Guid buyerId)
         {
             InitializeComponent();
+            _db = db;
             EventId = eventId;
             BuyerId = buyerId;
             LoadTickets();
@@ -50,7 +51,7 @@ namespace TicketsServise
                 {
                     new NpgsqlParameter("@event_id", EventId)
                 };
-                DataTable data = DatabaseHelper.ExecuteQuery(query, parameters);
+                DataTable data = _db.ExecuteQuery(query, parameters);
 
                 _tickets.Clear();
                 foreach (DataRow row in data.Rows)
@@ -133,7 +134,7 @@ namespace TicketsServise
                 return;
             }
 
-            var buyForm = new BuyTicket(_cart, BuyerId);
+            var buyForm = new BuyTicket(_db, _cart, BuyerId);
             buyForm.ShowDialog();
             LoadTickets();
             _cart.Clear();

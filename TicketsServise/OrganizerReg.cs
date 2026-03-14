@@ -6,9 +6,11 @@ namespace TicketsServise
 {
     public partial class OrganizerReg : Form
     {
-        public OrganizerReg()
+        private readonly IDatabase _db;
+        public OrganizerReg(IDatabase db)
         {
             InitializeComponent();
+            _db = db;
         }
         // Событие завершения регистрации для передачи id в главное окно
         public event Action<Guid> RegEnd;
@@ -24,7 +26,7 @@ namespace TicketsServise
             {
                 new NpgsqlParameter("@phone", phoneTextBox.Text),
             };
-            var queryResult = DatabaseHelper.ExecuteNonQuery(uniquePhoneQuery, phoneParameters);
+            var queryResult = _db.ExecuteNonQuery(uniquePhoneQuery, phoneParameters);
             Regex regex = new Regex(@"^\+7 \(9\d{2}\) \d{3}-\d{2}-\d{2}$");
             if (Convert.ToInt32(queryResult) == 1 && regex.IsMatch(phoneTextBox.Text))
             {
@@ -52,7 +54,7 @@ namespace TicketsServise
             {
                 new NpgsqlParameter("@email", emailTextBox.Text),
             };
-            var queryResult = DatabaseHelper.ExecuteNonQuery(uniqueEmailQuery, emailParameters);
+            var queryResult = _db.ExecuteNonQuery(uniqueEmailQuery, emailParameters);
             Regex regex = new Regex(@"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$");
             if (Convert.ToInt32(queryResult) == 1 && regex.IsMatch(emailTextBox.Text))
             {
@@ -126,7 +128,7 @@ namespace TicketsServise
             {
                 new NpgsqlParameter("@ogrn", ogrnTextBox.Text),
             };
-            var queryResult = DatabaseHelper.ExecuteNonQuery(uniqueOgrnQuery, ogrnParameters);
+            var queryResult = _db.ExecuteNonQuery(uniqueOgrnQuery, ogrnParameters);
             Regex regex = new Regex(@"^(\d{13}|\d{15})$");
             if (Convert.ToInt32(queryResult) == 1 && regex.IsMatch(ogrnTextBox.Text))
             {
@@ -158,7 +160,7 @@ namespace TicketsServise
             {
                 new NpgsqlParameter("@inn", innTextBox.Text),
             };
-            var queryResult = DatabaseHelper.ExecuteNonQuery(uniqueInnQuery, innParameters);
+            var queryResult = _db.ExecuteNonQuery(uniqueInnQuery, innParameters);
             Regex regex = new Regex(@"^(\d{12}|\d{10})$");
             if (Convert.ToInt32(queryResult) == 1 && regex.IsMatch(innTextBox.Text))
             {
@@ -190,7 +192,7 @@ namespace TicketsServise
             {
                 new NpgsqlParameter("@login", loginTextBox.Text),
             };
-            var queryResult = DatabaseHelper.ExecuteScalar(uniqueLoginQuery, loginParameters);
+            var queryResult = _db.ExecuteScalar(uniqueLoginQuery, loginParameters);
             Regex regex = new Regex(@"^[A-Za-z0-9!@#$%^&*()_\-+=]{8,20}$");
             if (Convert.ToInt32(queryResult) == 1 && regex.IsMatch(loginTextBox.Text))
             {
@@ -238,7 +240,7 @@ namespace TicketsServise
             {
                 new NpgsqlParameter("@bank_name", name)
             };
-            DataTable bankDataResults = DatabaseHelper.ExecuteQuery(bankDataQuery, bankDataParameters);
+            DataTable bankDataResults = _db.ExecuteQuery(bankDataQuery, bankDataParameters);
             if (bankDataResults != null && bankDataResults.Rows.Count == 1)
             {
                 bik = bankDataResults.Rows[0]["bik"].ToString();
@@ -399,7 +401,7 @@ namespace TicketsServise
                     new NpgsqlParameter("@new_corr_account", orgCorrAccount),
                     new NpgsqlParameter("@new_openning_date", openningDate)
                 };
-                var res = DatabaseHelper.ExecuteScalar(query, parameters);
+                var res = _db.ExecuteScalar(query, parameters);
                 if (res != null && res != DBNull.Value)
                 {
                     if (res is Guid guid)

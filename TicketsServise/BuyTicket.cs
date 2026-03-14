@@ -13,10 +13,11 @@ namespace TicketsServise
         private Dictionary<Guid, string> _paymentTypes = new Dictionary<Guid, string>();
         private BindingSource _paymentTypesSrc = new BindingSource();
         private List<byte[]> _documents = new List<byte[]>();
-
-        public BuyTicket(List<Ticket> tickets, Guid buyer)
+        private readonly IDatabase _db;
+        public BuyTicket(IDatabase db, List<Ticket> tickets, Guid buyer)
         {
             InitializeComponent();
+            _db = db;
             BuyerId = buyer;
             _tickets = tickets;
             LoadPaymentTypes();
@@ -66,7 +67,7 @@ namespace TicketsServise
             try
             {
                 var query = "SELECT * FROM payment_type;";
-                DataTable dt = DatabaseHelper.ExecuteQuery(query);
+                DataTable dt = _db.ExecuteQuery(query);
                 _paymentTypes.Clear();
                 paymentTypeComboBox.Items.Clear();
                 foreach (DataRow row in dt.Rows)
@@ -94,7 +95,7 @@ namespace TicketsServise
                     {
                         new NpgsqlParameter("@ticket_id", ticket.id)
                     };
-                    DataTable dt = DatabaseHelper.ExecuteQuery(query, parameters);
+                    DataTable dt = _db.ExecuteQuery(query, parameters);
                     if (dt.Rows.Count == 0)
                     {
                         MessageBox.Show($"Не удалось получить данные мероприятия для билета {ticket.place}.",
@@ -160,7 +161,7 @@ namespace TicketsServise
                 {
                     query = "CALL buying(@tickets, @buyer, @files, @payment_type)";
                 }
-                DatabaseHelper.ExecuteNonQuery(query, parameters.ToArray());
+                _db.ExecuteNonQuery(query, parameters.ToArray());
                 MessageBox.Show("Покупка успешно завершена!", "Успех",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 Close();
