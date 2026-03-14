@@ -1,7 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
-using Npgsql;
+﻿using Npgsql;
 using System.Data;
-using System.Numerics;
 
 namespace TicketsServise
 {
@@ -31,9 +29,9 @@ namespace TicketsServise
         {
             BuyerReg buyerReg = new BuyerReg(_db);
             buyerReg.RegEnd += (id) =>
-                {
-                    BuyerToolsLoad(id);
-                };
+            {
+                BuyerToolsLoad(id);
+            };
             buyerReg.ShowDialog();
         }
         private void organizerRegTool_Click(object sender, EventArgs e)
@@ -420,177 +418,18 @@ namespace TicketsServise
             eventsList.DataSource = _events;
             eventsList.DisplayMember = "ToString";
         }
-        private void LoadEventsFilter(string city)
+        private void LoadEvents(CompositeFilter filter)
         {
             _events.Clear();
             try
             {
-                var query = @"SELECT 
-                            event_id, 
-                            event_name,
-                            performers,
-                            tickets_available,
-                            city,
-                            place,
-                            type,
-                            genre,
-                            date_display
-                            FROM event_info
-                            WHERE city = @filter_city;";
-                var parameters = new NpgsqlParameter[]
-                {
-                    new NpgsqlParameter("@filter_city", city)
-                };
+                var query = @"SELECT event_id, event_name, performers, tickets_available, city, place, type, genre, date_display 
+                      FROM event_info";
+                if (!string.IsNullOrEmpty(filter.GetCondition()))
+                    query += " WHERE " + filter.GetCondition();
+
+                var parameters = filter.GetParameters();
                 DataTable dt = _db.ExecuteQuery(query, parameters);
-                foreach (DataRow row in dt.Rows)
-                {
-                    EventsInfo eventInfo = new EventsInfo(
-                        id: row.Field<Guid>("event_id"),
-                        name: row.Field<string>("event_name"),
-                        performers: row.Field<string>("performers"),
-                        ticketsAvailable: row.Field<long>("tickets_available"),
-                        city: row.Field<string>("city"),
-                        place: row.Field<string>("place"),
-                        type: row.Field<string>("type"),
-                        genre: row.Field<string>("genre"),
-                        dateTime: row.Field<string>("date_display")
-                    );
-                    _events.Add(eventInfo);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString(),
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-            eventsList.DataSource = null;
-            eventsList.DataSource = _events;
-            eventsList.DisplayMember = "ToString";
-        }
-        private void LoadEventsFilter(string city, string place)
-        {
-            _events.Clear();
-            try
-            {
-                var query = @"SELECT 
-                            event_id, 
-                            event_name,
-                            performers,
-                            tickets_available,
-                            city,
-                            place,
-                            type,
-                            genre,
-                            date_display
-                            FROM event_info
-                            WHERE city = @filter_city
-                            AND place = @filter_place;";
-                var parameters = new NpgsqlParameter[]
-                {
-                    new NpgsqlParameter("@filter_city", city),
-                    new NpgsqlParameter("@filter_place", place),
-                };
-                DataTable dt = _db.ExecuteQuery(query, parameters);
-                foreach (DataRow row in dt.Rows)
-                {
-                    EventsInfo eventInfo = new EventsInfo(
-                        id: row.Field<Guid>("event_id"),
-                        name: row.Field<string>("event_name"),
-                        performers: row.Field<string>("performers"),
-                        ticketsAvailable: row.Field<long>("tickets_available"),
-                        city: row.Field<string>("city"),
-                        place: row.Field<string>("place"),
-                        type: row.Field<string>("type"),
-                        genre: row.Field<string>("genre"),
-                        dateTime: row.Field<string>("date_display")
-                    );
-                    _events.Add(eventInfo);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString(),
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-            eventsList.DataSource = null;
-            eventsList.DataSource = _events;
-            eventsList.DisplayMember = "ToString";
-        }
-        private void LoadEventsFilter(string city, string place, string type)
-        {
-            _events.Clear();
-            try
-            {
-                var query = @"SELECT 
-                            event_id, 
-                            event_name,
-                            performers,
-                            tickets_available,
-                            city,
-                            place,
-                            type,
-                            genre,
-                            date_display
-                            FROM event_info
-                            WHERE city = @filter_city
-                            AND place = @filter_place
-                            AND type = @filter_type;";
-                var parameters = new NpgsqlParameter[]
-                {
-                    new NpgsqlParameter("@filter_city", city),
-                    new NpgsqlParameter("@filter_place", place),
-                    new NpgsqlParameter("@filter_type", type)
-                };
-                DataTable dt = _db.ExecuteQuery(query, parameters);
-                foreach (DataRow row in dt.Rows)
-                {
-                    EventsInfo eventInfo = new EventsInfo(
-                        id: row.Field<Guid>("event_id"),
-                        name: row.Field<string>("event_name"),
-                        performers: row.Field<string>("performers"),
-                        ticketsAvailable: row.Field<long>("tickets_available"),
-                        city: row.Field<string>("city"),
-                        place: row.Field<string>("place"),
-                        type: row.Field<string>("type"),
-                        genre: row.Field<string>("genre"),
-                        dateTime: row.Field<string>("date_display")
-                    );
-                    _events.Add(eventInfo);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString(),
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-            eventsList.DataSource = null;
-            eventsList.DataSource = _events;
-            eventsList.DisplayMember = "ToString";
-        }
-        private void LoadEventsFilter(string city, string place, string type, string genre)
-        {
-            _events.Clear();
-            try
-            {
-                var query = @"SELECT 
-                            event_id, 
-                            event_name,
-                            performers,
-                            tickets_available,
-                            city,
-                            place,
-                            type,
-                            genre,
-                            date_display
-                            FROM event_info
-                            WHERE city = @filter_city
-                            AND place = @filter_place
-                            AND type = @filter_type
-                            AND genre = @filter_genre;";
-                DataTable dt = _db.ExecuteQuery(query);
                 foreach (DataRow row in dt.Rows)
                 {
                     EventsInfo eventInfo = new EventsInfo(
@@ -711,8 +550,8 @@ namespace TicketsServise
                                     DialogResult result = MessageBox.Show(
                                         $"Билет успешно сохранен:\n{saveFileDialog.FileName}" +
                                         $"\n\nОткрыть файл?",
-                                        "Успешно", 
-                                        MessageBoxButtons.YesNo, 
+                                        "Успешно",
+                                        MessageBoxButtons.YesNo,
                                         MessageBoxIcon.Question);
 
                                     if (result == DialogResult.Yes)
@@ -756,35 +595,17 @@ namespace TicketsServise
         }
         private void filtersOkBtn_Click(object sender, EventArgs e)
         {
-            searchText.Clear();
-            if (string.IsNullOrEmpty(cityComboBox.Text))
-            {
-                MessageBox.Show("Не выбрано ни одного параметра фильтрации",
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                LoadEvents();
-            }
-            else if (string.IsNullOrEmpty(placeComboBox.Text))
-            {
-                LoadEventsFilter(cityComboBox.Text);
-            }
-            else if (string.IsNullOrEmpty(typeComboBox.Text))
-            {
-                LoadEventsFilter(cityComboBox.Text,
-                    placeComboBox.Text);
-            }
-            else if (string.IsNullOrEmpty(genreComboBox.Text))
-            {
-                LoadEventsFilter(cityComboBox.Text,
-                    placeComboBox.Text,
-                    typeComboBox.Text);
-            }
-            else
-            {
-                LoadEventsFilter(cityComboBox.Text,
-                    placeComboBox.Text,
-                    typeComboBox.Text,
-                    genreComboBox.Text);
-            }
+            var filter = new CompositeFilter();
+            if (!string.IsNullOrEmpty(cityComboBox.Text))
+                filter.Add(new CityFilter(cityComboBox.Text));
+            if (!string.IsNullOrEmpty(placeComboBox.Text))
+                filter.Add(new PlaceFilter(placeComboBox.Text));
+            if (!string.IsNullOrEmpty(typeComboBox.Text))
+                filter.Add(new TypeFilter(typeComboBox.Text));
+            if (!string.IsNullOrEmpty(genreComboBox.Text))
+                filter.Add(new GenreFilter(genreComboBox.Text));
+
+            LoadEvents(filter);
         }
         private void searchBtn_Click(object sender, EventArgs e)
         {
@@ -835,7 +656,7 @@ namespace TicketsServise
         {
             if (typeComboBox.SelectedIndex != -1)
             {
-                genreComboBox.Enabled= true;
+                genreComboBox.Enabled = true;
                 genreComboBox.SelectedIndex = -1;
             }
         }
