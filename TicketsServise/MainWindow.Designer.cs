@@ -446,11 +446,11 @@
         private MenuStrip menuStrip;
         private ToolStripMenuItem accountMenu;
         private ToolStripMenuItem regTool;
-        private ToolStripMenuItem loginTool;
-        private ToolStripMenuItem logoutTool;
-        private ToolStripMenuItem buyerRegTool;
-        private ToolStripMenuItem organizerRegTool;
-        private ToolStripMenuItem organizerMenu;
+        public ToolStripMenuItem loginTool;
+        public ToolStripMenuItem logoutTool;
+        public ToolStripMenuItem buyerRegTool;
+        public ToolStripMenuItem organizerRegTool;
+        public ToolStripMenuItem organizerMenu;
         private ToolStripMenuItem newEventTool;
         private ToolStripMenuItem infoMenu;
         private ToolStripMenuItem aboutTool;
@@ -460,7 +460,7 @@
         private TabPage ticketPage;
         private GroupBox filtersGroupBox;
         private Button filtersOkBtn;
-        private Button buyBtn;
+        public Button buyBtn;
         private TextBox searchText;
         private Button searchBtn;
         private ComboBox cityComboBox;

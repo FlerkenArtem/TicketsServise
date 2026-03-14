@@ -16,6 +16,8 @@ namespace TicketsServise
         private BindingSource _ticketsSrc = new BindingSource();
         private BindingSource _cartSrc = new BindingSource();
         private readonly IDatabase _db;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public IPriceCalculator PriceCalculator { get; set; } = new SumCalculator();
         public Tickets(IDatabase db ,Guid eventId, Guid buyerId)
         {
             InitializeComponent();
@@ -73,10 +75,7 @@ namespace TicketsServise
 
         private decimal CountCartSum()
         {
-            decimal sum = 0;
-            foreach (var ticket in _cart)
-                sum += ticket.price;
-            return sum;
+            return PriceCalculator.Calculate(_cart);
         }
 
         private void UpdateSumLabel()

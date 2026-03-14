@@ -15,6 +15,7 @@ namespace TicketsServise
         private Dictionary<Guid, string> _typeFilter = new Dictionary<Guid, string>();
         private Dictionary<Guid, string> _genreFilter = new Dictionary<Guid, string>();
         private readonly IDatabase _db;
+        private UserState _currentState;
         public MainWindow(IDatabase db)
         {
             InitializeComponent();
@@ -24,6 +25,13 @@ namespace TicketsServise
             LoadTypes();
             LoadGenres();
             LoadEvents();
+        }
+        public void TransitionToState(UserState newState)
+        {
+            _currentState?.Exit();
+            _currentState = newState;
+            _currentState.SetContext(this);
+            _currentState.Enter();
         }
         private void buyerRegTool_Click(object sender, EventArgs e)
         {
@@ -104,33 +112,8 @@ namespace TicketsServise
             };
             login.ShowDialog();
         }
-        private void OrganizerToolsLoad(Guid newId)
-        {
-            buyerId = Guid.Empty;
-            organizerId = newId;
-            logoutTool.Enabled = true;
-            organizerMenu.Visible = true;
-            organizerMenu.Enabled = true;
-            loginTool.Visible = false;
-            loginTool.Enabled = false;
-            buyerRegTool.Visible = false;
-            buyerRegTool.Enabled = false;
-            organizerRegTool.Visible = false;
-            organizerRegTool.Enabled = false;
-        }
-        private void BuyerToolsLoad(Guid newId)
-        {
-            organizerId = Guid.Empty;
-            buyerId = newId;
-            logoutTool.Enabled = true;
-            buyBtn.Enabled = true;
-            loginTool.Visible = false;
-            loginTool.Enabled = false;
-            buyerRegTool.Visible = false;
-            buyerRegTool.Enabled = false;
-            organizerRegTool.Visible = false;
-            organizerRegTool.Enabled = false;
-        }
+        private void OrganizerToolsLoad(Guid newId) => TransitionToState(new OrganizerState(newId));
+        private void BuyerToolsLoad(Guid newId) => TransitionToState(new BuyerState(newId));
         private void aboutTool_Click(object sender, EventArgs e)
         {
             About about = new About();

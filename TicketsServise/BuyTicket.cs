@@ -51,6 +51,16 @@ namespace TicketsServise
         }
         private void okBtn_Click(object sender, EventArgs e)
         {
+            var cartNotEmpty = new CartNotEmptyHandler();
+            var paymentMethodSelected = new PaymentMethodSelectedHandler();
+            var cardDataFilled = new CardDataFilledHandler();
+            cartNotEmpty.SetNext(paymentMethodSelected);
+            paymentMethodSelected.SetNext(cardDataFilled);
+            if (!cartNotEmpty.Handle(this, out string error))
+            {
+                MessageBox.Show(error, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             _documents.Clear();
             foreach (Ticket ticket in _tickets)
             {
@@ -154,6 +164,45 @@ namespace TicketsServise
                 bool isCard = selectedId == cardGuid;
                 cardGroupBox.Enabled = isCard;
                 cardGroupBox.Visible = isCard;
+            }
+        }
+        public int TicketsCount
+        {
+            get
+            {
+                return _tickets.Count;
+            }
+        }
+
+        public Guid? SelectedPaymentType
+        {
+            get
+            {
+                return paymentTypeComboBox.SelectedValue as Guid?;
+            }
+        }
+
+        public string CardNumber
+        {
+            get
+            {
+                return cardNumberTextBox.Text;
+            }
+        }
+
+        public string ValidThru
+        {
+            get
+            {
+                return validThruTextBox.Text;
+            }
+        }
+
+        public string Cvv2
+        {
+            get
+            {
+                return cvv2TextBox.Text;
             }
         }
     }
