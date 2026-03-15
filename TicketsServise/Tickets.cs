@@ -1,9 +1,6 @@
 ﻿using Npgsql;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Windows.Forms;
 
 namespace TicketsServise
 {
@@ -18,7 +15,7 @@ namespace TicketsServise
         private readonly IDatabase _db;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public IPriceCalculator PriceCalculator { get; set; } = new SumCalculator();
-        public Tickets(IDatabase db ,Guid eventId, Guid buyerId)
+        public Tickets(IDatabase db, Guid eventId, Guid buyerId)
         {
             InitializeComponent();
             _db = db;

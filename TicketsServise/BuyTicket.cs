@@ -1,7 +1,4 @@
 ﻿using Npgsql;
-using QuestPDF.Fluent;
-using QuestPDF.Helpers;
-using QuestPDF.Infrastructure;
 using System.Data;
 
 namespace TicketsServise
@@ -108,7 +105,7 @@ namespace TicketsServise
             try
             {
                 Guid paymentTypeId = (Guid)paymentTypeComboBox.SelectedValue;
-                bool isCardPayment = paymentTypeId == new Guid("019c2ec6-9c46-7f96-b45b-90575b8f41cc");
+                bool isCardPayment = paymentTypeId == Constants.CardPaymentTypeId;
                 var ticketIds = _tickets.Select(t => t.id).ToArray();
                 var parameters = new List<NpgsqlParameter>
                 {

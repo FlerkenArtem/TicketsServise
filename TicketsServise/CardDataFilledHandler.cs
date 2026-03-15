@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TicketsServise
+﻿namespace TicketsServise
 {
     public class CardDataFilledHandler : ValidationHandler
     {
-        private static readonly Guid _cardPaymentTypeId = new Guid("019c2ec6-9c46-7f96-b45b-90575b8f41cc");
+        private static readonly Guid _cardPaymentTypeId = Constants.CardPaymentTypeId;
         public override bool Handle(BuyTicket context, out string errorMessage)
         {
             if (context.SelectedPaymentType == _cardPaymentTypeId)

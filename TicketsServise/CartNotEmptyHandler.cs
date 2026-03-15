@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TicketsServise
+﻿namespace TicketsServise
 {
     public class CartNotEmptyHandler : ValidationHandler
     {

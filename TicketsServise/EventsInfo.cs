@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Numerics;
-using System.Text;
-
-namespace TicketsServise
+﻿namespace TicketsServise
 {
     public class EventsInfo
     {
@@ -17,14 +12,14 @@ namespace TicketsServise
         public string Genre { get; set; }
         public string DateTime { get; set; }
         public EventsInfo(
-            Guid id, 
-            string name, 
-            string performers, 
-            long ticketsAvailable, 
-            string city, 
-            string place, 
-            string type, 
-            string genre, 
+            Guid id,
+            string name,
+            string performers,
+            long ticketsAvailable,
+            string city,
+            string place,
+            string type,
+            string genre,
             string dateTime)
         {
             Id = id;

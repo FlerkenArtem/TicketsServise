@@ -63,8 +63,8 @@ namespace TicketsServise
             try
             {
                 // Определение типа аккаунта
-                var queryType = @"SELECT 1 FROM account 
-                                WHERE type = '019c1a16-e399-73ef-84c8-86938b5f77f5' 
+                var queryType = $@"SELECT 1 FROM account 
+                                WHERE type = '{Constants.OrganizerAccountTypeId}' 
                                 AND login = @new_login 
                                 AND password = @new_password";
 

@@ -8,7 +8,7 @@ namespace TicketsServise
         Guid organizerId = Guid.Empty;
         private Dictionary<Guid, string> _events = new Dictionary<Guid, string>();
         private readonly IDatabase _db;
-        public NewTicketsWN(IDatabase db,Guid id)
+        public NewTicketsWN(IDatabase db, Guid id)
         {
             InitializeComponent();
             _db = db;

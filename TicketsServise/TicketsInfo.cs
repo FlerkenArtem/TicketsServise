@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TicketsServise
+﻿namespace TicketsServise
 {
     public class TicketsInfo
     {
@@ -17,7 +13,7 @@ namespace TicketsServise
         }
         public override string ToString()
         {
-            return $"{Name}: {Place}"; 
+            return $"{Name}: {Place}";
         }
     }
 }

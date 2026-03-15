@@ -8,7 +8,7 @@ namespace TicketsServise
         private Guid organizerId;
         private Dictionary<Guid, string> _events = new Dictionary<Guid, string>();
         IDatabase _db;
-        public NewTicketsWON(IDatabase db,Guid id)
+        public NewTicketsWON(IDatabase db, Guid id)
         {
             InitializeComponent();
             _db = db;
@@ -80,8 +80,8 @@ namespace TicketsServise
             int ticketsCount = (int)countEdit.Value;
             string placeName = placeNameEdit.Text;
             if (eventId == Guid.Empty ||
-                price <= 0 || 
-                ticketsCount <= 0 || 
+                price <= 0 ||
+                ticketsCount <= 0 ||
                 string.IsNullOrEmpty(placeName))
             {
                 MessageBox.Show("Не все необходимые поля заполнены или поля заполнены неверно.", "Ошибка",
