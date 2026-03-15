@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace TicketsServise
 {
-    public partial class NewEvent : Form
+    public partial class NewEvent : BaseForm
     {
         private Guid organizerId;
         private Dictionary<string, string?> _performers = new Dictionary<string, string?>();
@@ -13,12 +13,10 @@ namespace TicketsServise
         private Dictionary<Guid, string> _types = new Dictionary<Guid, string>();
         private Dictionary<Guid, string> _genres = new Dictionary<Guid, string>();
         private DateTime eventDateTime;
-        private readonly IDatabase _db;
-        public NewEvent(IDatabase db, Guid id)
+        public NewEvent(IDatabase db, Guid id) : base(db)
         {
-            this.organizerId = id;
+            organizerId = id;
             InitializeComponent();
-            _db = db;
             _performersSrc.DataSource = _performers.Keys.ToList();
             performersListBox.DataSource = _performersSrc;
             LoadPlaces();
@@ -51,98 +49,23 @@ namespace TicketsServise
                 dateTimeTextBox.BackColor = Color.DarkRed;
             }
         }
-        private void LoadPlaces() // Загрузка площадок
+        private void LoadPlaces()
         {
-            try
-            {
-                _places.Clear();
-                var query = "SELECT id, name FROM place";
-                DataTable placesData = _db.ExecuteQuery(query);
-
-                if (placesData.Rows.Count == 0)
-                {
-                    MessageBox.Show("В базе данных нет ни одной площадки.\nСначала создайте площадку через меню организатора.",
-                        "Нет данных", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-
-                foreach (DataRow row in placesData.Rows)
-                {
-                    _places.Add(row.Field<Guid>("id"), row.Field<string>("name"));
-                }
-
-                placeComboBox.DataSource = _places.ToList();
-                placeComboBox.DisplayMember = "Value";
-                placeComboBox.ValueMember = "Key";
-                placeComboBox.SelectedIndex = -1;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Не удалось загрузить площадки из БД: {ex}",
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            LoadDictionary<Guid>(placeComboBox, "SELECT id, name FROM place",
+                row => row.Field<Guid>("id"),
+                row => row.Field<string>("name"));
         }
-        private void LoadTypes() // Загрузить типы мероприятий
+        private void LoadTypes()
         {
-            try
-            {
-                _types.Clear();
-                var query = "SELECT id, type FROM event_type";
-                DataTable typesData = _db.ExecuteQuery(query);
-
-                if (typesData.Rows.Count == 0)
-                {
-                    MessageBox.Show("В базе данных нет типов мероприятий.\nОбратитесь к администратору.",
-                        "Нет данных", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-
-                foreach (DataRow row in typesData.Rows)
-                {
-                    _types.Add(row.Field<Guid>("id"), row.Field<string>("type"));
-                }
-
-                typeComboBox.DataSource = _types.ToList();
-                typeComboBox.DisplayMember = "Value";
-                typeComboBox.ValueMember = "Key";
-                typeComboBox.SelectedIndex = -1;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Не удалось загрузить типы мероприятий из БД: {ex}",
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            LoadDictionary<Guid>(typeComboBox, "SELECT id, type FROM event_type",
+                row => row.Field<Guid>("id"),
+                row => row.Field<string>("type"));
         }
-        private void LoadGenres() // Загрузить жанры
+        private void LoadGenres()
         {
-            try
-            {
-                _genres.Clear();
-                var query = "SELECT id, genre FROM event_genre";
-                DataTable genresData = _db.ExecuteQuery(query);
-
-                if (genresData.Rows.Count == 0)
-                {
-                    MessageBox.Show("В базе данных нет жанров мероприятий.\nОбратитесь к администратору.",
-                        "Нет данных", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-
-                foreach (DataRow row in genresData.Rows)
-                {
-                    _genres.Add(row.Field<Guid>("id"), row.Field<string>("genre"));
-                }
-
-                genreComboBox.DataSource = _genres.ToList();
-                genreComboBox.DisplayMember = "Value";
-                genreComboBox.ValueMember = "Key";
-                genreComboBox.SelectedIndex = -1;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Не удалось загрузить жанры мероприятий из БД: {ex}",
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            LoadDictionary<Guid>(genreComboBox, "SELECT id, genre FROM event_genre",
+                row => row.Field<Guid>("id"),
+                row => row.Field<string>("genre"));
         }
         private void addBtn_Click(object sender, EventArgs e) // Добавить исполнителя
         {

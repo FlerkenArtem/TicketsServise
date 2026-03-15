@@ -3,23 +3,17 @@ using System.Data;
 
 namespace TicketsServise
 {
-    public partial class MainWindow : Form
+    public partial class MainWindow : BaseForm
     {
         private Guid buyerId;
         private Guid organizerId;
         private Guid eventId;
         private List<EventsInfo> _events = new List<EventsInfo>();
         private List<TicketsInfo> _tickets = new List<TicketsInfo>();
-        private Dictionary<Guid, string> _cityFilter = new Dictionary<Guid, string>();
-        private Dictionary<Guid, string> _placeFilter = new Dictionary<Guid, string>();
-        private Dictionary<Guid, string> _typeFilter = new Dictionary<Guid, string>();
-        private Dictionary<Guid, string> _genreFilter = new Dictionary<Guid, string>();
-        private readonly IDatabase _db;
         private UserState _currentState;
-        public MainWindow(IDatabase db)
+        public MainWindow(IDatabase db) : base(db)
         {
             InitializeComponent();
-            _db = db;
             LoadCities();
             LoadPlaces();
             LoadTypes();
@@ -189,116 +183,27 @@ namespace TicketsServise
         }
         private void LoadCities()
         {
-            var query = "SELECT id, name FROM city;";
-            DataTable res = _db.ExecuteQuery(query);
-            if (res.Rows.Count == 0)
-            {
-                MessageBox.Show("В базе данных нет ни одного города.",
-                        "Нет данных", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-            foreach (DataRow row in res.Rows)
-            {
-                _cityFilter.Add(row.Field<Guid>("id"), row.Field<string>("name"));
-            }
-            cityComboBox.DataSource = _cityFilter.ToList();
-            cityComboBox.SelectedIndex = -1;
-            cityComboBox.ValueMember = "Key";
-            cityComboBox.DisplayMember = "Value";
-
+            LoadDictionary<Guid>(cityComboBox, "SELECT id, name FROM city",
+                row => row.Field<Guid>("id"),
+                row => row.Field<string>("name"));
         }
-        private void LoadPlaces() // Загрузка площадок
+        private void LoadPlaces()
         {
-            try
-            {
-                _placeFilter.Clear();
-                var query = "SELECT id, name FROM place";
-                DataTable placesData = _db.ExecuteQuery(query);
-
-                if (placesData.Rows.Count == 0)
-                {
-                    MessageBox.Show("В базе данных нет ни одной площадки.\nСначала создайте площадку через меню организатора.",
-                        "Нет данных", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-
-                foreach (DataRow row in placesData.Rows)
-                {
-                    _placeFilter.Add(row.Field<Guid>("id"), row.Field<string>("name"));
-                }
-
-                placeComboBox.DataSource = _placeFilter.ToList();
-                placeComboBox.DisplayMember = "Value";
-                placeComboBox.ValueMember = "Key";
-                placeComboBox.SelectedIndex = -1;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Не удалось загрузить площадки из БД: {ex}",
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            LoadDictionary<Guid>(placeComboBox, "SELECT id, name FROM place",
+                row => row.Field<Guid>("id"),
+                row => row.Field<string>("name"));
         }
-        private void LoadTypes() // Загрузить типы мероприятий
+        private void LoadTypes()
         {
-            try
-            {
-                _typeFilter.Clear();
-                var query = "SELECT id, type FROM event_type";
-                DataTable typesData = _db.ExecuteQuery(query);
-
-                if (typesData.Rows.Count == 0)
-                {
-                    MessageBox.Show("В базе данных нет типов мероприятий.\nОбратитесь к администратору.",
-                        "Нет данных", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-
-                foreach (DataRow row in typesData.Rows)
-                {
-                    _typeFilter.Add(row.Field<Guid>("id"), row.Field<string>("type"));
-                }
-
-                typeComboBox.DataSource = _typeFilter.ToList();
-                typeComboBox.DisplayMember = "Value";
-                typeComboBox.ValueMember = "Key";
-                typeComboBox.SelectedIndex = -1;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Не удалось загрузить типы мероприятий из БД: {ex}",
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            LoadDictionary<Guid>(typeComboBox, "SELECT id, type FROM event_type",
+                row => row.Field<Guid>("id"),
+                row => row.Field<string>("type"));
         }
-        private void LoadGenres() // Загрузить жанры
+        private void LoadGenres()
         {
-            try
-            {
-                _genreFilter.Clear();
-                var query = "SELECT id, genre FROM event_genre";
-                DataTable genresData = _db.ExecuteQuery(query);
-
-                if (genresData.Rows.Count == 0)
-                {
-                    MessageBox.Show("В базе данных нет жанров мероприятий.\nОбратитесь к администратору.",
-                        "Нет данных", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-
-                foreach (DataRow row in genresData.Rows)
-                {
-                    _genreFilter.Add(row.Field<Guid>("id"), row.Field<string>("genre"));
-                }
-
-                genreComboBox.DataSource = _genreFilter.ToList();
-                genreComboBox.DisplayMember = "Value";
-                genreComboBox.ValueMember = "Key";
-                genreComboBox.SelectedIndex = -1;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Не удалось загрузить жанры мероприятий из БД: {ex}",
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            LoadDictionary<Guid>(genreComboBox, "SELECT id, genre FROM event_genre",
+                row => row.Field<Guid>("id"),
+                row => row.Field<string>("genre"));
         }
         private void LoadEvents()
         {
