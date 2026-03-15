@@ -118,69 +118,37 @@ namespace TicketsServise
                 // Неправильное - красным
             }
         }
-        private void ogrnTextBox_TextChanged(Object sender, EventArgs e)
+        private void ogrnTextBox_TextChanged(object sender, EventArgs e)
         {
-            // Проверка правильности ввода ОГРН
-            var uniqueOgrnQuery = @"SELECT 1 
-                                    FROM ogrn 
-                                    WHERE ogrn = @ogrn;";
-            var ogrnParameters = new NpgsqlParameter[]
+            bool formatOk = ValidationHelper.IsValidOgrn(ogrnTextBox.Text);
+            bool isUnique = CheckOgrnUniqueness(ogrnTextBox.Text);
+            ogrnTextBox.BackColor = formatOk ? (isUnique ? Color.LightGreen : Color.LightYellow) : Color.DarkRed;
+        }
+        private bool CheckOgrnUniqueness(string ogrn)
+        {
+            var query = "SELECT 1 FROM ogrn WHERE ogrn = @ogrn";
+            var param = new NpgsqlParameter[]
             {
-                new NpgsqlParameter("@ogrn", ogrnTextBox.Text),
+                new NpgsqlParameter ("@ogrn", ogrn)
             };
-            var queryResult = _db.ExecuteNonQuery(uniqueOgrnQuery, ogrnParameters);
-            Regex regex = new Regex(@"^(\d{13}|\d{15})$");
-            if (Convert.ToInt32(queryResult) == 1 && regex.IsMatch(ogrnTextBox.Text))
-            {
-                ogrnTextBox.BackColor = Color.LightYellow;
-                /* Если ОГРН не уникален (по БД),
-                 * ОГРН соответствует regex
-                 * - желный */
-            }
-            else if (regex.IsMatch(ogrnTextBox.Text))
-            {
-                ogrnTextBox.BackColor = Color.LightGreen;
-                /* Если ОГРН не уникален (по БД),
-                 * ОГРН соответствует regex
-                 * - зеленый */
-            }
-            else
-            {
-                ogrnTextBox.BackColor = Color.DarkRed;
-                // Неправильный - красный
-            }
+            var result = _db.ExecuteScalar(query, param);
+            return Convert.ToInt32(result) != 1;
         }
         private void innTextBox_TextChanged(object sender, EventArgs e)
         {
-            // Проверка ввода ИНН
-            var uniqueInnQuery = @"SELECT 1 
-                                    FROM inn 
-                                    WHERE inn = @inn;";
-            var innParameters = new NpgsqlParameter[]
+            bool formatOk = ValidationHelper.IsValidInn(innTextBox.Text, true); // для организации
+            bool isUnique = CheckInnUniqueness(innTextBox.Text);
+            innTextBox.BackColor = formatOk ? (isUnique ? Color.LightGreen : Color.LightYellow) : Color.DarkRed;
+        }
+        private bool CheckInnUniqueness(string inn)
+        {
+            var query = "SELECT 1 FROM inn WHERE inn = @inn";
+            var param = new NpgsqlParameter[]
             {
-                new NpgsqlParameter("@inn", innTextBox.Text),
+                new NpgsqlParameter ("@inn", inn)
             };
-            var queryResult = _db.ExecuteNonQuery(uniqueInnQuery, innParameters);
-            Regex regex = new Regex(@"^(\d{12}|\d{10})$");
-            if (Convert.ToInt32(queryResult) == 1 && regex.IsMatch(innTextBox.Text))
-            {
-                innTextBox.BackColor = Color.LightYellow;
-                /* Если ИНН не уникален (по БД),
-                 * ИНН соответствует regex
-                 * - желный */
-            }
-            else if (regex.IsMatch(innTextBox.Text))
-            {
-                innTextBox.BackColor = Color.LightGreen;
-                /* Если ИНН уникален (по БД),
-                 * ИНН соответствует regex
-                 * - зеленый */
-            }
-            else
-            {
-                innTextBox.BackColor = Color.DarkRed;
-                // Неправильный - красный
-            }
+            var result = _db.ExecuteScalar(query, param);
+            return Convert.ToInt32(result) != 1;
         }
         private void loginTextBox_TextChanged(object sender, EventArgs e)
         {
@@ -260,18 +228,6 @@ namespace TicketsServise
                 }
             }
         }
-        private void bankBikTextBox_TextChanged(object sender, EventArgs e)
-        {
-            Regex regex = new Regex(@"^04\d{7}$");
-            if (regex.IsMatch(bankBikTextBox.Text))
-            {
-                bankBikTextBox.BackColor = Color.LightGreen;
-            }
-            else
-            {
-                bankBikTextBox.BackColor = Color.DarkRed;
-            }
-        }
         private void bankInnTextBox_TextChanged(object sender, EventArgs e)
         {
             Regex regex = new Regex(@"^\d{10}$");
@@ -284,41 +240,25 @@ namespace TicketsServise
                 bankInnTextBox.BackColor = Color.DarkRed;
             }
         }
+        private void bankBikTextBox_TextChanged(object sender, EventArgs e)
+        {
+            bankBikTextBox.BackColor = ValidationHelper.IsValidBik(bankBikTextBox.Text)
+                ? Color.LightGreen : Color.DarkRed;
+        }
         private void bankKppTextBox_TextChanged(object sender, EventArgs e)
         {
-            Regex regex = new Regex(@"^\d{9}$");
-            if (regex.IsMatch(bankKppTextBox.Text))
-            {
-                bankKppTextBox.BackColor = Color.LightGreen;
-            }
-            else
-            {
-                bankKppTextBox.BackColor = Color.DarkRed;
-            }
+            bankKppTextBox.BackColor = ValidationHelper.IsValidKpp(bankKppTextBox.Text)
+                ? Color.LightGreen : Color.DarkRed;
         }
         private void bankCorrAccountTextBox_TextChanged(object sender, EventArgs e)
         {
-            Regex regex = new Regex(@"^301\d{17}$");
-            if (regex.IsMatch(bankCorrAccountTextBox.Text))
-            {
-                bankCorrAccountTextBox.BackColor = Color.LightGreen;
-            }
-            else
-            {
-                bankCorrAccountTextBox.BackColor = Color.DarkRed;
-            }
+            bankCorrAccountTextBox.BackColor = ValidationHelper.IsValidCorrAccount(bankCorrAccountTextBox.Text)
+                ? Color.LightGreen : Color.DarkRed;
         }
         private void orgCorrAccountTextBox_TextChanged(object sender, EventArgs e)
         {
-            Regex regex = new Regex(@"^40\d{18}$");
-            if (regex.IsMatch(orgCorrAccountTextBox.Text))
-            {
-                orgCorrAccountTextBox.BackColor = Color.LightGreen; // Корректно
-            }
-            else
-            {
-                orgCorrAccountTextBox.BackColor = Color.DarkRed;   // Ошибка
-            }
+            orgCorrAccountTextBox.BackColor = ValidationHelper.IsValidOrgAccount(orgCorrAccountTextBox.Text)
+                ? Color.LightGreen : Color.DarkRed;
         }
         private void cancelBtn_Click(object sender, EventArgs e)
         {

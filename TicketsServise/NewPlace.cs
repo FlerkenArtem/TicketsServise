@@ -1,23 +1,13 @@
 ﻿using Npgsql;
 using System.Data;
-using System.Text.RegularExpressions;
 
 namespace TicketsServise
 {
-    public partial class NewPlace : Form
+    public partial class NewPlace : BaseForm
     {
-        private List<string> _regions = new List<string>();
-        private List<string> _districts = new List<string>();
-        private List<string> _cities = new List<string>();
-        private List<string> _areas = new List<string>();
-        private List<string> _streets = new List<string>();
-        private List<string> _houses = new List<string>();
-        private List<string> _flats = new List<string>();
-        private readonly IDatabase _db;
-        public NewPlace(IDatabase db)
+        public NewPlace(IDatabase db) : base(db)
         {
             InitializeComponent();
-            _db = db;
             LoadRegions();
             LoadDistricts();
             LoadCities();
@@ -26,295 +16,117 @@ namespace TicketsServise
             LoadHouses();
             LoadFlats();
         }
-        private void LoadRegions() // Загрузка регионов
+        private void LoadRegions() => LoadList("SELECT name FROM region ORDER BY name;", regionComboBox);
+        private void LoadDistricts() => LoadList("SELECT name FROM district ORDER BY name;", districtComboBox);
+        private void LoadCities() => LoadList("SELECT name FROM city ORDER BY name;", cityComboBox);
+        private void LoadAreas() => LoadList("SELECT name FROM area ORDER BY name;", areaComboBox);
+        private void LoadStreets() => LoadList("SELECT name FROM street ORDER BY name;", streetComboBox);
+        private void LoadHouses() => LoadList("SELECT number FROM house ORDER BY number;", houseComboBox);
+        private void LoadFlats() => LoadList("SELECT number FROM flat ORDER BY number;", flatComboBox);
+
+        private void LoadList(string query, ComboBox comboBox)
         {
-            regionComboBox.Items.Clear();
-            try
-            {
-                var query = "SELECT name FROM region;";
-                DataTable regions = _db.ExecuteQuery(query);
-                foreach (DataRow row in regions.Rows)
-                {
-                    string name = row.Field<string>("name");
-                    _regions.Add(name);
-                }
-                regionComboBox.DataSource = _regions;
-                regionComboBox.SelectedIndex = -1;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка загрузки регионов: {ex}.",
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            var dataTable = ExecuteQuery(query);
+            var items = new List<string>();
+            foreach (DataRow row in dataTable.Rows)
+                items.Add(row[0].ToString());
+            comboBox.DataSource = items;
+            comboBox.SelectedIndex = -1;
         }
-        private void LoadDistricts() // Загрузка муниципальных районов
+
+        // Валидация полей с помощью ValidationHelper
+        private void regionComboBox_TextChanged(object sender, EventArgs e)
         {
-            districtComboBox.Items.Clear();
-            try
-            {
-                var query = "SELECT name FROM district;";
-                DataTable districts = _db.ExecuteQuery(query);
-                foreach (DataRow row in districts.Rows)
-                {
-                    string name = row.Field<string>("name");
-                    _districts.Add(name);
-                }
-                districtComboBox.DataSource = _districts;
-                districtComboBox.SelectedIndex = -1;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка загрузки муниципальных районов: {ex}.",
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            regionComboBox.BackColor = ValidationHelper.IsValidRegion(regionComboBox.Text)
+                ? Color.LightGreen : Color.DarkRed;
         }
-        private void LoadCities() // Загрузка городов
+
+        private void districtComboBox_TextChanged(object sender, EventArgs e)
         {
-            cityComboBox.Items.Clear();
-            try
-            {
-                var query = "SELECT name FROM city;";
-                DataTable cities = _db.ExecuteQuery(query);
-                foreach (DataRow row in cities.Rows)
-                {
-                    string name = row.Field<string>("name");
-                    _cities.Add(name);
-                }
-                cityComboBox.DataSource = _cities;
-                cityComboBox.SelectedIndex = -1;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка загрузки городов: {ex}.",
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            districtComboBox.BackColor = ValidationHelper.IsValidOptional(districtComboBox.Text)
+                ? Color.LightGreen : Color.DarkRed;
         }
-        private void LoadAreas() // Загрузка внутригородовых районов
+
+        private void cityComboBox_TextChanged(object sender, EventArgs e)
         {
-            areaComboBox.Items.Clear();
-            try
-            {
-                var query = "SELECT name FROM area;";
-                DataTable areas = _db.ExecuteQuery(query);
-                foreach (DataRow row in areas.Rows)
-                {
-                    string name = row.Field<string>("name");
-                    _areas.Add(name);
-                }
-                areaComboBox.DataSource = _areas;
-                areaComboBox.SelectedIndex = -1;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка загрузки внутригородовых районов: {ex}.",
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            cityComboBox.BackColor = ValidationHelper.IsValidRegion(cityComboBox.Text)
+                ? Color.LightGreen : Color.DarkRed;
         }
-        private void LoadStreets() // Загрузка улиц
+
+        private void areaComboBox_TextChanged(object sender, EventArgs e)
         {
-            streetComboBox.Items.Clear();
-            try
-            {
-                var query = "SELECT name FROM street;";
-                DataTable streets = _db.ExecuteQuery(query);
-                foreach (DataRow row in streets.Rows)
-                {
-                    string name = row.Field<string>("name");
-                    _streets.Add(name);
-                }
-                streetComboBox.DataSource = _streets;
-                streetComboBox.SelectedIndex = -1;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка загрузки улиц: {ex}.",
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            areaComboBox.BackColor = ValidationHelper.IsValidOptional(areaComboBox.Text)
+                ? Color.LightGreen : Color.DarkRed;
         }
-        private void LoadHouses() // Загрузка домов
+
+        private void streetComboBox_TextChanged(object sender, EventArgs e)
         {
-            houseComboBox.Items.Clear();
-            try
-            {
-                var query = "SELECT number FROM house;";
-                DataTable houses = _db.ExecuteQuery(query);
-                foreach (DataRow row in houses.Rows)
-                {
-                    string number = row.Field<string>("number");
-                    _houses.Add(number);
-                }
-                houseComboBox.DataSource = _houses;
-                houseComboBox.SelectedIndex = -1;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка загрузки домов: {ex}.",
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            streetComboBox.BackColor = ValidationHelper.IsValidRegion(streetComboBox.Text)
+                ? Color.LightGreen : Color.DarkRed;
         }
-        private void LoadFlats() // Загрузка квартир
+
+        private void houseComboBox_TextChanged(object sender, EventArgs e)
         {
-            flatComboBox.Items.Clear();
-            try
-            {
-                var query = "SELECT number FROM flat;";
-                DataTable flats = _db.ExecuteQuery(query);
-                foreach (DataRow row in flats.Rows)
-                {
-                    string number = row.Field<string>("number");
-                    _flats.Add(number);
-                }
-                flatComboBox.DataSource = _flats;
-                flatComboBox.SelectedIndex = -1;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка загрузки квартир: {ex}.",
-                    "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            houseComboBox.BackColor = ValidationHelper.IsValidHouse(houseComboBox.Text)
+                ? Color.LightGreen : Color.DarkRed;
         }
-        private void regionComboBox_TextChanged(object sender, EventArgs e) // Проверка правильности заполнения регионов
+
+        private void flatComboBox_TextChanged(object sender, EventArgs e)
         {
-            Regex regex = new Regex("^[А-ЯЁ][а-яё]*(?:[-\\s][А-Яа-яё]+)*$");
-            if (regex.IsMatch(regionComboBox.Text))
-            {
-                regionComboBox.BackColor = Color.LightGreen;
-            }
-            else
-            {
-                regionComboBox.BackColor = Color.DarkRed;
-            }
+            flatComboBox.BackColor = ValidationHelper.IsValidFlat(flatComboBox.Text)
+                ? Color.LightGreen : Color.DarkRed;
         }
-        private void districtComboBox_TextChanged(object sender, EventArgs e) // Проверка правильности заполнения муниципальных районов
+
+        // Кнопка "ОК"
+        private void okBtn_Click(object sender, EventArgs e)
         {
-            Regex regex = new Regex("^[А-ЯЁ][а-яё]*(?:[-\\s][А-Яа-яё]+)*$");
-            if (regex.IsMatch(districtComboBox.Text) || districtComboBox.Text.Length == 0)
+            string name = nameTextBox.Text.Trim();
+            string region = regionComboBox.Text.Trim();
+            string district = districtComboBox.Text.Trim();
+            string city = cityComboBox.Text.Trim();
+            string area = areaComboBox.Text.Trim();
+            string street = streetComboBox.Text.Trim();
+            string house = houseComboBox.Text.Trim();
+            string flat = flatComboBox.Text.Trim();
+            string index = indexTextBox.Text.Trim();
+
+            if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(region) ||
+                string.IsNullOrEmpty(city) || string.IsNullOrEmpty(street) ||
+                string.IsNullOrEmpty(house) || string.IsNullOrEmpty(index))
             {
-                districtComboBox.BackColor = Color.LightGreen;
-            }
-            else
-            {
-                districtComboBox.BackColor = Color.DarkRed;
-            }
-        }
-        private void cityComboBox_TextChanged(object sender, EventArgs e) // Проверка правильности заполнения городов
-        {
-            Regex regex = new Regex("^[А-ЯЁ][а-яё]*(?:[-\\s][А-Яа-яё]+)*$");
-            if (regex.IsMatch(cityComboBox.Text))
-            {
-                cityComboBox.BackColor = Color.LightGreen;
-            }
-            else
-            {
-                cityComboBox.BackColor = Color.DarkRed;
-            }
-        }
-        private void areaComboBox_TextChanged(object sender, EventArgs e) // Проверка правильности заполнения внутригородовых районов
-        {
-            Regex regex = new Regex("^[А-ЯЁ][а-яё]*(?:[-\\s][А-Яа-яё]+)*$");
-            if (regex.IsMatch(areaComboBox.Text) || areaComboBox.Text.Length == 0)
-            {
-                areaComboBox.BackColor = Color.LightGreen;
-            }
-            else
-            {
-                areaComboBox.BackColor = Color.DarkRed;
-            }
-        }
-        private void streetComboBox_TextChanged(object sender, EventArgs e) // Проверка правильности заполнения улиц
-        {
-            Regex regex = new Regex("^[А-ЯЁ][а-яё]*(?:[-\\s][А-Яа-яё]+)*$");
-            if (regex.IsMatch(streetComboBox.Text))
-            {
-                streetComboBox.BackColor = Color.LightGreen;
-            }
-            else
-            {
-                streetComboBox.BackColor = Color.DarkRed;
-            }
-        }
-        private void houseComboBox_TextChanged(object sender, EventArgs e) // Проверка правильности заполнения домов
-        {
-            Regex regex = new Regex("^\\d+[А-ЯЁа-яё\\d\\-/]*(?:\\s+(?:корпус|к\\.|литера|лит\\.|строение|стр\\.|владение|влад\\.|сооружение|соор\\.|дом|д\\.)\\s*[А-ЯЁа-яё\\d]+|\\s+[А-ЯЁа-яё])*$");
-            if (regex.IsMatch(houseComboBox.Text))
-            {
-                houseComboBox.BackColor = Color.LightGreen;
-            }
-            else
-            {
-                houseComboBox.BackColor = Color.DarkRed;
-            }
-        }
-        private void flatComboBox_TextChanged(object sender, EventArgs e) // Проверка правильности заполнения квартир
-        {
-            Regex regex = new Regex("^\\d{1,4}[А-ЯЁа-яё]?$");
-            if (regex.IsMatch(flatComboBox.Text) || flatComboBox.Text.Length == 0)
-            {
-                flatComboBox.BackColor = Color.LightGreen;
-            }
-            else
-            {
-                flatComboBox.BackColor = Color.DarkRed;
-            }
-        }
-        private void okBtn_Click(object sender, EventArgs e) // Запрос к БД по нажатию кнопки ОК
-        {
-            string name = nameTextBox.Text;
-            string region = regionComboBox.Text;
-            string? district = districtComboBox.Text;
-            string city = cityComboBox.Text;
-            string? area = areaComboBox.Text;
-            string street = streetComboBox.Text;
-            string house = houseComboBox.Text;
-            string? flat = flatComboBox.Text;
-            string index = indexTextBox.Text;
-            if (string.IsNullOrEmpty(name) ||
-                string.IsNullOrEmpty(region) ||
-                string.IsNullOrEmpty(city) ||
-                string.IsNullOrEmpty(street) ||
-                string.IsNullOrEmpty(house) ||
-                string.IsNullOrEmpty(index))
-            {
-                MessageBox.Show("Не все необходимые поля заполнены.", "Ошибка",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Не все необходимые поля заполнены.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+
             try
             {
-                var query = @"CALL new_place(
-                            @name::varchar, 
-                            @region::varchar, 
-                            @district::varchar, 
-                            @city::varchar, 
-                            @area::varchar, 
-                            @street::varchar, 
-                            @house::varchar, 
-                            @flat::varchar, 
-                            @index::varchar);";
+                string query = @"CALL new_place(
+                            @name::varchar, @region::varchar, @district::varchar,
+                            @city::varchar, @area::varchar, @street::varchar,
+                            @house::varchar, @flat::varchar, @index::varchar);";
+
                 var parameters = new NpgsqlParameter[]
                 {
                     new NpgsqlParameter("@name", name),
                     new NpgsqlParameter("@region", region),
-                    new NpgsqlParameter("@district", district),
+                    new NpgsqlParameter("@district", string.IsNullOrEmpty(district) ? DBNull.Value : (object)district),
                     new NpgsqlParameter("@city", city),
-                    new NpgsqlParameter("@area", area),
+                    new NpgsqlParameter("@area", string.IsNullOrEmpty(area) ? DBNull.Value : (object)area),
                     new NpgsqlParameter("@street", street),
                     new NpgsqlParameter("@house", house),
-                    new NpgsqlParameter("@flat", flat),
+                    new NpgsqlParameter("@flat", string.IsNullOrEmpty(flat) ? DBNull.Value : (object)flat),
                     new NpgsqlParameter("@index", index)
                 };
-                var res = _db.ExecuteScalar(query, parameters);
-                this.Close();
+
+                ExecuteNonQuery(query, parameters);
+                Close();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка выполнения запроса: {ex}",
-                        "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Ошибка выполнения запроса: {ex}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private void cancelBtn_Click(Object sender, EventArgs e) // Закрытие окна по нажатию кнопки Отмена
-        {
-            this.Close();
-        }
+
+        private void cancelBtn_Click(object sender, EventArgs e) => Close();
     }
 }

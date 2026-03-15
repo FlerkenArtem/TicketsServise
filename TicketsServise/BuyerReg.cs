@@ -1,193 +1,115 @@
 ﻿using Npgsql;
-using System.Text.RegularExpressions;
 
 namespace TicketsServise
 {
-    public partial class BuyerReg : Form
+    public partial class BuyerReg : BaseForm
     {
-        private readonly IDatabase _db;
-        public BuyerReg(IDatabase db)
+        public event Action<Guid> RegEnd;
+        private Guid buyerId;
+
+        public BuyerReg(IDatabase db) : base(db)
         {
             InitializeComponent();
-            _db = db;
         }
-        public event Action<Guid> RegEnd;
-        Guid buyerId;
-        private void phoneTextBox_TextChanged(object sender, EventArgs e) // проверка правильности и уникальности номера телефона
+        private void phoneTextBox_TextChanged(object sender, EventArgs e)
         {
-            var uniquePhoneQuery = @"SELECT 1 
-                                    FROM account 
-                                    WHERE phone = @phone;";
-            var phoneParameters = new NpgsqlParameter[]
-            {
-                new NpgsqlParameter("@phone", phoneTextBox.Text),
-            };
-            var queryResult = _db.ExecuteScalar(uniquePhoneQuery, phoneParameters);
-            Regex regex = new Regex(@"^\+7 \(9\d{2}\) \d{3}-\d{2}-\d{2}$");
-            if (Convert.ToInt32(queryResult) == 1 && regex.IsMatch(phoneTextBox.Text))
-            {
-                phoneTextBox.BackColor = Color.LightYellow;
-            }
-            else if (regex.IsMatch(phoneTextBox.Text))
-            {
-                phoneTextBox.BackColor = Color.LightGreen;
-            }
-            else
-            {
-                phoneTextBox.BackColor = Color.DarkRed;
-            }
+            bool formatOk = ValidationHelper.IsValidPhone(phoneTextBox.Text);
+            bool isUnique = CheckPhoneUniqueness(phoneTextBox.Text);
+            phoneTextBox.BackColor = formatOk ? (isUnique ? Color.LightGreen : Color.LightYellow) : Color.DarkRed;
         }
-        private void emailTextBox_TextChanged(object sender, EventArgs e) // проверка правильности и уникальности email
+        private bool CheckPhoneUniqueness(string phone)
         {
-            var uniqueEmailQuery = @"SELECT 1 
-                                    FROM account 
-                                    WHERE email = @email;";
-            var emailParameters = new NpgsqlParameter[]
-            {
-                new NpgsqlParameter("@email", emailTextBox.Text),
-            };
-            var queryResult = _db.ExecuteScalar(uniqueEmailQuery, emailParameters);
-            Regex regex = new Regex(@"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$");
-            if (Convert.ToInt32(queryResult) == 1 && regex.IsMatch(emailTextBox.Text))
-            {
-                emailTextBox.BackColor = Color.LightYellow;
-            }
-            else if (regex.IsMatch(emailTextBox.Text))
-            {
-                emailTextBox.BackColor = Color.LightGreen;
-            }
-            else
-            {
-                emailTextBox.BackColor = Color.DarkRed;
-            }
+            var query = "SELECT 1 FROM account WHERE phone = @phone";
+            var param = new NpgsqlParameter("@phone", phone);
+            var result = ExecuteScalar(query, param);
+            return Convert.ToInt32(result) != 1;
         }
-        private void passwordTextBox_TextChanged(object sender, EventArgs e) // проверка правильности и совпвдения паролей
+        private void emailTextBox_TextChanged(object sender, EventArgs e)
         {
-            if (passwordTextBox.TextLength >= 8 && (passwordTextBox.Text == password2TextBox.Text || password2TextBox.TextLength == 0))
-            {
-                passwordTextBox.BackColor = Color.LightGreen;
-            }
-            else
-            {
-                passwordTextBox.BackColor = Color.DarkRed;
-            }
+            bool formatOk = ValidationHelper.IsValidEmail(emailTextBox.Text);
+            bool isUnique = CheckEmailUniqueness(emailTextBox.Text);
+            emailTextBox.BackColor = formatOk ? (isUnique ? Color.LightGreen : Color.LightYellow) : Color.DarkRed;
         }
-        private void password2TextBox_TextChanged(object sender, EventArgs e) // проверка правильности и совпвдения паролей
+        private bool CheckEmailUniqueness(string email)
         {
-            if (password2TextBox.TextLength >= 8 && password2TextBox.Text == passwordTextBox.Text)
-            {
-                password2TextBox.BackColor = Color.LightGreen;
-            }
-            else
-            {
-                password2TextBox.BackColor = Color.DarkRed;
-            }
+            var query = "SELECT 1 FROM account WHERE email = @email";
+            var param = new NpgsqlParameter("@email", email);
+            var result = ExecuteScalar(query, param);
+            return Convert.ToInt32(result) != 1;
         }
-        private void surnameTextBox_TextChanged(object sender, EventArgs e) // проверка правильности Фамилии
+        private void loginTextBox_TextChanged(object sender, EventArgs e)
         {
-            Regex regex = new Regex(@"^[А-Яа-яЁё]+([-][А-Яа-яЁё]+)*$");
-            if (regex.IsMatch(surnameTextBox.Text) && surnameTextBox.TextLength >= 2 && char.IsUpper(surnameTextBox.Text[0]))
-            {
-                surnameTextBox.BackColor = Color.LightGreen;
-            }
-            else
-            {
-                surnameTextBox.BackColor = Color.DarkRed;
-            }
+            bool formatOk = ValidationHelper.IsValidLogin(loginTextBox.Text);
+            bool isUnique = CheckLoginUniqueness(loginTextBox.Text);
+            loginTextBox.BackColor = formatOk ? (isUnique ? Color.LightGreen : Color.LightYellow) : Color.DarkRed;
         }
-        private void nameTextBox_TextChanged(object sender, EventArgs e) // проверка правильности имени
+        private bool CheckLoginUniqueness(string login)
         {
-            Regex regex = new Regex(@"^[А-Яа-яЁё]+$");
-            if (regex.IsMatch(nameTextBox.Text) && nameTextBox.TextLength >= 2 && char.IsUpper(nameTextBox.Text[0]))
-            {
-                nameTextBox.BackColor = Color.LightGreen;
-            }
-            else
-            {
-                nameTextBox.BackColor = Color.DarkRed;
-            }
+            var query = "SELECT 1 FROM account WHERE login = @login";
+            var param = new NpgsqlParameter("@login", login);
+            var result = ExecuteScalar(query, param);
+            return Convert.ToInt32(result) != 1;
         }
-        private void patronymicTextBox_TextChanged(object sender, EventArgs e) // проверка правильности отчества
+        private void passwordTextBox_TextChanged(object sender, EventArgs e)
         {
-            Regex regex = new Regex(@"^$|^[А-Яа-яЁё]+$");
-            if ((regex.IsMatch(patronymicTextBox.Text) && patronymicTextBox.TextLength >= 2 && char.IsUpper(patronymicTextBox.Text[0]) ||
-                patronymicTextBox.TextLength == 0))
-            {
-                patronymicTextBox.BackColor = Color.LightGreen;
-            }
-            else
-            {
-                patronymicTextBox.BackColor = Color.DarkRed;
-            }
+            bool valid = ValidationHelper.IsValidPassword(passwordTextBox.Text) &&
+                        (passwordTextBox.Text == password2TextBox.Text || password2TextBox.TextLength == 0);
+            passwordTextBox.BackColor = valid ? Color.LightGreen : Color.DarkRed;
         }
-        private void loginTextBox_TextChanged(object sender, EventArgs e) // проверка правильности и уникальности логина
+        private void password2TextBox_TextChanged(object sender, EventArgs e)
         {
-            var uniqueLoginQuery = @"SELECT 1 
-                                    FROM account 
-                                    WHERE login = @login;";
-            var loginParameters = new NpgsqlParameter[]
-            {
-                new NpgsqlParameter("@login", loginTextBox.Text),
-            };
-            var queryResult = _db.ExecuteScalar(uniqueLoginQuery, loginParameters);
-            Regex regex = new Regex(@"^[A-Za-z0-9!@#$%^&*()_\-+=]{8,20}$");
-            if (Convert.ToInt32(queryResult) == 1 && regex.IsMatch(loginTextBox.Text))
-            {
-                loginTextBox.BackColor = Color.LightYellow;
-            }
-            else if (regex.IsMatch(loginTextBox.Text))
-            {
-                loginTextBox.BackColor = Color.LightGreen;
-            }
-            else
-            {
-                loginTextBox.BackColor = Color.DarkRed;
-            }
+            bool valid = password2TextBox.TextLength >= 8 && password2TextBox.Text == passwordTextBox.Text;
+            password2TextBox.BackColor = valid ? Color.LightGreen : Color.DarkRed;
         }
-        private void okBtn_Click(object sender, EventArgs e) // Обработка события нажатия ОК, завершение регистрации
+        private void surnameTextBox_TextChanged(object sender, EventArgs e)
+        {
+            surnameTextBox.BackColor = ValidationHelper.IsValidName(surnameTextBox.Text, true)
+                ? Color.LightGreen : Color.DarkRed;
+        }
+        private void nameTextBox_TextChanged(object sender, EventArgs e)
+        {
+            nameTextBox.BackColor = ValidationHelper.IsValidName(nameTextBox.Text, false)
+                ? Color.LightGreen : Color.DarkRed;
+        }
+
+        private void patronymicTextBox_TextChanged(object sender, EventArgs e)
+        {
+            patronymicTextBox.BackColor = ValidationHelper.IsValidPatronymic(patronymicTextBox.Text)
+                ? Color.LightGreen : Color.DarkRed;
+        }
+        private void okBtn_Click(object sender, EventArgs e)
         {
             string login = loginTextBox.Text;
             string password;
             if (passwordTextBox.Text == password2TextBox.Text)
-            {
                 password = passwordTextBox.Text;
-            }
             else
             {
                 MessageBox.Show("Пароли не совпадают.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+
             string email = emailTextBox.Text;
             string phone = phoneTextBox.Text;
             string surname = surnameTextBox.Text;
             string name = nameTextBox.Text;
             string? patronymic = patronymicTextBox.Text;
 
-
-            if (string.IsNullOrEmpty(login) ||
-                string.IsNullOrEmpty(password) ||
-                string.IsNullOrEmpty(email) ||
-                string.IsNullOrEmpty(phone) ||
-                string.IsNullOrEmpty(surname) ||
-                string.IsNullOrEmpty(name) ||
-                string.IsNullOrEmpty(password))
+            if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password) ||
+                string.IsNullOrEmpty(email) || string.IsNullOrEmpty(phone) ||
+                string.IsNullOrEmpty(surname) || string.IsNullOrEmpty(name))
             {
-                MessageBox.Show("Не все необходимые поля заполнены.", "Ошибка",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Не все необходимые поля заполнены.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
             try
             {
-                var buyerRegQuery = @"SELECT buyer_reg(
-                                    @new_login::varchar, 
-                                    @new_password::varchar, 
-                                    @new_email::varchar, 
-                                    @new_phone::varchar, 
-                                    @new_surname::varchar, 
-                                    @new_name::varchar, 
+                string query = @"SELECT buyer_reg(
+                                    @new_login::varchar, @new_password::varchar, @new_email::varchar,
+                                    @new_phone::varchar, @new_surname::varchar, @new_name::varchar,
                                     @new_patronymic::varchar);";
-                var buyerRegParameters = new NpgsqlParameter[]
+                var parameters = new NpgsqlParameter[]
                 {
                     new NpgsqlParameter("@new_login", login),
                     new NpgsqlParameter("@new_password", password),
@@ -195,42 +117,25 @@ namespace TicketsServise
                     new NpgsqlParameter("@new_phone", phone),
                     new NpgsqlParameter("@new_surname", surname),
                     new NpgsqlParameter("@new_name", name),
-                    new NpgsqlParameter("@new_patronymic", patronymic)
+                    new NpgsqlParameter("@new_patronymic", string.IsNullOrEmpty(patronymic) ? DBNull.Value : (object)patronymic)
                 };
-                var buyerResult = _db.ExecuteScalar(buyerRegQuery, buyerRegParameters);
-                if (buyerResult != null && buyerResult != DBNull.Value)
+                var result = ExecuteScalar(query, parameters);
+                if (result != null && result != DBNull.Value && Guid.TryParse(result.ToString(), out Guid parsedGuid))
                 {
-                    if (buyerId is Guid guid)
-                    {
-                        buyerId = guid;
-                    }
-                    else
-                    {
-                        string strRes = buyerResult.ToString();
-                        if (Guid.TryParse(strRes, out Guid parsedGuid))
-                        {
-                            buyerId = parsedGuid;
-                            RegEnd.Invoke(buyerId);
-                            this.Close();
-                        }
-                        else
-                        {
-                            MessageBox.Show($"Ошибка: функция вернула '{strRes}', ожидался GUID.",
-                                "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return;
-                        }
-                    }
+                    buyerId = parsedGuid;
+                    RegEnd.Invoke(buyerId);
+                    Close();
+                }
+                else
+                {
+                    MessageBox.Show($"Ошибка регистрации: функция вернула '{result}'", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Ошибка",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private void cancelBtn_Click(object sender, EventArgs e) // Отмена - закрытие окна
-        {
-            Close();
-        }
+        private void cancelBtn_Click(object sender, EventArgs e) => Close();
     }
 }
